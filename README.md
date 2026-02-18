@@ -38,30 +38,41 @@ mvn clean compile
 
 ## Running the Application
 
+### Option 1: Using Maven (Recommended for Development)
+
 Run the application using Maven:
 
 ```bash
 mvn javafx:run
 ```
 
-Or run it directly using Java (after compiling):
+### Option 2: Running the Packaged JAR
+
+After packaging (see below), run the JAR directly:
 
 ```bash
-mvn clean package
-java --module-path $PATH_TO_FX --add-modules javafx.controls,javafx.fxml -jar target/javafx-mvc-app-1.0-SNAPSHOT.jar
+java -jar target/javafx-mvc-app-1.0-SNAPSHOT.jar
 ```
+
+This works because the JAR includes all necessary JavaFX dependencies (fat JAR).
 
 ## Packaging the Application
 
-To create a JAR file:
+To create an executable JAR file with all dependencies:
 
 ```bash
 mvn clean package
 ```
 
-This will create an executable JAR file in the `target/` directory:
-- `javafx-mvc-app-1.0-SNAPSHOT.jar` - Regular JAR
-- `javafx-mvc-app-1.0-SNAPSHOT-shaded.jar` - Fat JAR with all dependencies (if using shade plugin)
+This will create a fat JAR file in the `target/` directory:
+- `javafx-mvc-app-1.0-SNAPSHOT.jar` - Shaded JAR with all dependencies (8+ MB)
+- `original-javafx-mvc-app-1.0-SNAPSHOT.jar` - Original JAR without dependencies (6 KB)
+
+The shaded JAR can be run on any system with Java 17+ installed using:
+
+```bash
+java -jar target/javafx-mvc-app-1.0-SNAPSHOT.jar
+```
 
 ## Running Tests
 
@@ -69,6 +80,28 @@ To run the tests:
 
 ```bash
 mvn test
+```
+
+## Maven Commands Summary
+
+```bash
+# Compile the project
+mvn compile
+
+# Run tests
+mvn test
+
+# Package into JAR
+mvn package
+
+# Clean and rebuild
+mvn clean install
+
+# Run the application
+mvn javafx:run
+
+# Skip tests during build
+mvn package -DskipTests
 ```
 
 ## MVC Architecture
