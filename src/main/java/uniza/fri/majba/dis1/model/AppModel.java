@@ -1,4 +1,4 @@
-package com.example.app.model;
+package uniza.fri.majba.dis1.model;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;

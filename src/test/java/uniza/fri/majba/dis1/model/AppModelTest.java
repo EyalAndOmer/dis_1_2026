@@ -1,4 +1,4 @@
-package com.example.app.model;
+package uniza.fri.majba.dis1.model;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

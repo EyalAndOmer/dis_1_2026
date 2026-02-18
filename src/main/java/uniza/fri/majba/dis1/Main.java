@@ -1,4 +1,4 @@
-package com.example.app;
+package uniza.fri.majba.dis1;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

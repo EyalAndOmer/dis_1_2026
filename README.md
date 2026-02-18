@@ -38,41 +38,60 @@ mvn clean compile
 
 ## Running the Application
 
-### Option 1: Using Maven (Recommended for Development)
+### Option 1: Using Maven JavaFX Plugin (Recommended)
 
-Run the application using Maven:
+Run the application using the JavaFX Maven plugin:
 
 ```bash
 mvn javafx:run
 ```
 
-### Option 2: Running the Packaged JAR
-
-After packaging (see below), run the JAR directly:
+### Option 2: Using Maven Exec Plugin
 
 ```bash
-java -jar target/javafx-mvc-app-1.0-SNAPSHOT.jar
+mvn exec:java
 ```
 
-This works because the JAR includes all necessary JavaFX dependencies (fat JAR).
+### Option 3: Running from IntelliJ IDEA
+
+If you're running directly from IntelliJ IDEA, you need to add VM options to your run configuration:
+
+1. Open Run → Edit Configurations
+2. Select your Main class configuration
+3. Add the following to VM options:
+   ```
+   --module-path /path/to/javafx-sdk/lib --add-modules javafx.controls,javafx.fxml
+   ```
+
+   Or use Maven to handle the modules automatically:
+   - Instead of running Main.java directly, use the Maven JavaFX plugin
+   - Right-click on pom.xml → Maven → Run Maven Build
+   - Set the command line as: `javafx:run`
+
+**Easier Solution for IntelliJ:**
+1. Right-click on `pom.xml`
+2. Select "Add as Maven Project" (if not already done)
+3. Open the Maven tool window (View → Tool Windows → Maven)
+4. Navigate to: Plugins → javafx → javafx:run
+5. Double-click to run
+
+### Option 4: Running the Packaged JAR
+
+**Note:** Running JavaFX as a fat JAR has limitations. The recommended approach is using the JavaFX Maven plugin.
+
+For advanced packaging, consider using jlink or jpackage for creating native installers.
 
 ## Packaging the Application
 
-To create an executable JAR file with all dependencies:
+To compile and package the application:
 
 ```bash
 mvn clean package
 ```
 
-This will create a fat JAR file in the `target/` directory:
-- `javafx-mvc-app-1.0-SNAPSHOT.jar` - Shaded JAR with all dependencies (8+ MB)
-- `original-javafx-mvc-app-1.0-SNAPSHOT.jar` - Original JAR without dependencies (6 KB)
-
-The shaded JAR can be run on any system with Java 17+ installed using:
-
-```bash
-java -jar target/javafx-mvc-app-1.0-SNAPSHOT.jar
-```
+This will create a JAR file in the `target/` directory. However, for JavaFX applications, it's recommended to use:
+- The JavaFX Maven plugin for running during development
+- jlink or jpackage for distribution
 
 ## Running Tests
 

@@ -1,6 +1,6 @@
-package com.example.app.controller;
+package uniza.fri.majba.dis1.controller;
 
-import com.example.app.model.AppModel;
+import uniza.fri.majba.dis1.model.AppModel;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;

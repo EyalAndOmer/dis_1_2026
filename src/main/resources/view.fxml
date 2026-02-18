@@ -10,7 +10,7 @@
 
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.example.app.controller.AppController"
+      fx:controller="uniza.fri.majba.dis1.controller.AppController"
       spacing="20"
       alignment="CENTER"
       prefHeight="300.0"
