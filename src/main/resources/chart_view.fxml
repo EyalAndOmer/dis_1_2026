@@ -42,6 +42,14 @@
                         <FontIcon iconLiteral="fa-stop" iconSize="12"/>
                     </graphic>
                 </Button>
+
+                <Separator orientation="VERTICAL" styleClass="toolbar-separator"/>
+
+                <Button fx:id="configButton" text="Kombinácie" styleClass="btn btn-secondary btn-toolbar" onAction="#onConfigureCombinations">
+                    <graphic>
+                        <FontIcon iconLiteral="fa-cogs" iconSize="12"/>
+                    </graphic>
+                </Button>
             </HBox>
 
             <Region HBox.hgrow="ALWAYS"/>

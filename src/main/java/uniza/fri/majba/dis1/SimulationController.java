@@ -9,11 +9,16 @@ import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -59,6 +64,8 @@ public class SimulationController {
     private Button startButton;
     @FXML
     private Button stopButton;
+    @FXML
+    private Button configButton;
 
     // Chart-related fields
     @FXML
@@ -71,6 +78,12 @@ public class SimulationController {
     private static final int ROWS_PER_PAGE = 10;
     private static final int CHARTS_PER_PAGE = 4;
     private ObservableList<RouteRow> allRoutes;
+
+    // Store city combinations from the configuration dialog
+    private ObservableList<String> cityCombinations;
+
+    // Reference to the city combination controller
+    private CityCombinationController cityCombinationController;
 
     // Chart management
     private List<XYChart> allCharts;
@@ -140,6 +153,14 @@ public class SimulationController {
 
     @FXML
     private void onStartSimulation() {
+        // Check if combinations have been configured
+        if (cityCombinationController == null || cityCombinationController.getCombinationCount() == 0) {
+            showAlert("Chýbajúca konfigurácia",
+                     "Najprv musíte nakonfigurovať kombinácie miest.\n\n" +
+                     "Kliknite na tlačidlo 'Konfigurovať kombinácie' a pridajte aspoň jednu kombináciu.");
+            return;
+        }
+
         // Show the content panel when simulation starts
         contentPanel.setVisible(true);
         contentPanel.setManaged(true);
@@ -161,6 +182,57 @@ public class SimulationController {
         // Hide the content panel when simulation stops
         contentPanel.setVisible(false);
         contentPanel.setManaged(false);
+    }
+
+    @FXML
+    private void onConfigureCombinations() {
+        try {
+            // Load the city combinations FXML
+            FXMLLoader loader = new FXMLLoader(
+                getClass().getResource("/city_combinations.fxml")
+            );
+            VBox root = loader.load();
+
+            // Get the controller and store reference
+            cityCombinationController = loader.getController();
+
+            // Create a new stage for the dialog
+            Stage dialog = new Stage();
+            dialog.setTitle("Konfigurácia kombinácií miest");
+            dialog.initModality(Modality.APPLICATION_MODAL);
+
+            // Get the main window to use as owner
+            Stage owner = (Stage) configButton.getScene().getWindow();
+            dialog.initOwner(owner);
+
+            // Create scene and apply styles
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add(
+                getClass().getResource("/chart_styles.css").toExternalForm()
+            );
+
+            dialog.setScene(scene);
+            dialog.setResizable(false);
+
+            // Show dialog and wait for it to close
+            dialog.showAndWait();
+
+            // After dialog closes, you can get the updated combinations if needed
+            // ObservableList<String> combinations = controller.getCombinationsAsStrings();
+            // Update simulation with new combinations...
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Chyba", "Nepodarilo sa otvoriť okno konfigurácie kombinácií.");
+        }
+    }
+
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
     // Chart methods
