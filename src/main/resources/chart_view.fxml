@@ -3,12 +3,11 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
 <StackPane xmlns="http://javafx.com/javafx"
            xmlns:fx="http://javafx.com/fxml"
-           fx:controller="uniza.fri.majba.dis1.SimulationController"
+           fx:controller="uniza.fri.majba.dis1.ui.controller.SimulationController"
            styleClass="app-root">
 
     <VBox spacing="0" prefWidth="1200" prefHeight="760">
