@@ -16,12 +16,12 @@ public abstract class EmpiricGenerator extends Generator {
      * A small constant used to check if the sum of probabilities is close enough to 1.0, accounting for floating-point precision issues.
      */
     public static final double DELTA = 1.0E-12;
-    private final Random propabilityRandom;
+    private final Random probabilityRandom;
     private final List<ProbabilityGeneratorPair> probabilityGeneratorPairs;
 
 
     public EmpiricGenerator(List<EmpiricGeneratorConfiguration> configurations) {
-        this.propabilityRandom = new Random(Config.getSeedGenerator().nextInt());
+        this.probabilityRandom = new Random(Config.getSeedGenerator().nextInt());
 
         double sum = 0.0;
         List<ProbabilityGeneratorPair> pairs = new ArrayList<>();
@@ -38,7 +38,7 @@ public abstract class EmpiricGenerator extends Generator {
         this.probabilityGeneratorPairs = List.copyOf(pairs);
     }
 
-    Generator findProbabilityRandom(double probability) {
+    Generator selectGenerator(double probability) {
         if (probability < 0.0 || probability >= 1.0) {
             throw new IllegalArgumentException("Probability out of range [0.0, 1.0): " + probability);
         }
@@ -57,8 +57,8 @@ public abstract class EmpiricGenerator extends Generator {
 
     @Override
     public double generate() {
-        double probability = this.propabilityRandom.nextDouble();
-        Generator pickedGenerator = this.findProbabilityRandom(probability);
+        double probability = this.probabilityRandom.nextDouble();
+        Generator pickedGenerator = this.selectGenerator(probability);
 
         return pickedGenerator.generate();
     }

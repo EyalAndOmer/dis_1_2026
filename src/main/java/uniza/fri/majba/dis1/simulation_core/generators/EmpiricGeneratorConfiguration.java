@@ -13,7 +13,7 @@ public record EmpiricGeneratorConfiguration(
         }
         if (lowerBound >= upperBound) {
             throw new IllegalArgumentException(
-                    "lowerBound must be less than upperBound"
+                    "Lower bound must be less than upper bound"
             );
         }
     }
