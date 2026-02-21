@@ -19,6 +19,7 @@ public abstract class SimulationCore {
 
     /**
      * Runs the simulation for a specified number of replications.
+     * This is a blocking method and therefore should be called from a separate thread.
      * @param numberOfReplications the number of replications to execute
      */
     public void simulate(int numberOfReplications) {
