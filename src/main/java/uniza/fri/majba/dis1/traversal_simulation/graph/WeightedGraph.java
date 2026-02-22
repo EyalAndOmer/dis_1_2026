@@ -11,11 +11,17 @@ public final class WeightedGraph<V> {
     private final Map<V, List<Edge<V>>> nodes = new HashMap<>();
 
     /**
-     * Adds a node to the graph. If the node already exists, it does nothing.
+     * Adds a node to the graph. If the node already exists, an exception is thrown.
      * @param node The node to be added to the graph.
+     * @throws IllegalStateException if the node already exists in the graph.
      */
     public void addNode(V node) {
-        nodes.computeIfAbsent(node, k -> List.of());
+        nodes.compute(node, (k, v) -> {
+            if (v != null) {
+                throw new IllegalStateException("Key already exists: " + k);
+            }
+            return List.of();
+        });
     }
 
     /**
@@ -27,6 +33,10 @@ public final class WeightedGraph<V> {
      * @param generator The generator that generates the traversal average speed on this edge.
      */
     public void addUndirectedEdge(V from, V to, EdgeColor edgeColor, int weight, Generator generator) {
+        if (from.equals(to)) {
+            throw new IllegalArgumentException("Cannot add an edge from a node to itself.");
+        }
+
         addDirectedEdge(from, to, edgeColor, weight, generator);
         addDirectedEdge(to, from, edgeColor, weight, generator);
     }
