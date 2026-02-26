@@ -15,6 +15,6 @@ public record Edge<V>(V from, V to, EdgeColor edgeColor, int weight, Generator g
      * @return The traversal time of the edge.
      */
     public double getTraversalTime() {
-        return (double) weight / generator.generate();
+        return weight / generator.generate();
     }
 }

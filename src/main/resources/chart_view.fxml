@@ -31,6 +31,9 @@
                 <Label text="Iterácie:" styleClass="toolbar-label"/>
                 <TextField text="10000" styleClass="toolbar-input" prefWidth="100"/>
 
+                <Label text="Seed:" styleClass="toolbar-label"/>
+                <TextField text="50" styleClass="toolbar-input" prefWidth="100"/>
+
                 <Button fx:id="startButton" text="Spustiť" styleClass="btn btn-primary btn-toolbar" onAction="#onStartSimulation">
                     <graphic>
                         <FontIcon iconLiteral="fa-play" iconSize="12"/>
@@ -44,7 +47,7 @@
 
                 <Separator orientation="VERTICAL" styleClass="toolbar-separator"/>
 
-                <Button fx:id="configButton" text="Kombinácie" styleClass="btn btn-secondary btn-toolbar" onAction="#onConfigureCombinations">
+                <Button fx:id="configButton" styleClass="btn btn-secondary btn-toolbar" onAction="#onConfigureCombinations">
                     <graphic>
                         <FontIcon iconLiteral="fa-cogs" iconSize="12"/>
                     </graphic>

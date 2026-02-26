@@ -20,7 +20,7 @@ public abstract class EmpiricGenerator extends Generator {
     private final List<ProbabilityGeneratorPair> probabilityGeneratorPairs;
 
 
-    public EmpiricGenerator(List<EmpiricGeneratorConfiguration> configurations) {
+    protected EmpiricGenerator(List<EmpiricGeneratorConfiguration> configurations) {
         this.probabilityRandom = new Random(Config.getSeedGenerator().nextInt());
 
         double sum = 0.0;

@@ -9,6 +9,6 @@ public class ContinuousEmpiricGenerator extends EmpiricGenerator {
 
     @Override
     protected Generator createGenerator(EmpiricGeneratorConfiguration configuration) {
-        return null;
+        return new ContinuousUniformGenerator(configuration.lowerBound(), configuration.upperBound());
     }
 }

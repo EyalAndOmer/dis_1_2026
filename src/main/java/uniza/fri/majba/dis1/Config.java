@@ -43,7 +43,6 @@ public enum Config {
         return seedGenerator;
     }
 
-    /** Static forwarder — keeps existing call sites (Config.getSeedGenerator()) unchanged. */
     public static Random getSeedGenerator() {
         return INSTANCE.seedGenerator;
     }
