@@ -50,7 +50,7 @@ public abstract class EmpiricGenerator extends Generator {
         }
 
         // Handles the edge case where probability is equal to 1.0
-        return probabilityGeneratorPairs.get(probabilityGeneratorPairs.size() - 1).generator();
+        return probabilityGeneratorPairs.getLast().generator();
     }
 
     protected abstract Generator createGenerator(EmpiricGeneratorConfiguration configuration);
