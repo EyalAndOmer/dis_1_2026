@@ -26,8 +26,8 @@ public class TraversalReplication implements Replication {
     ContinuousEmpiricGenerator blackEdgeGenerator = new ContinuousEmpiricGenerator(blackEdgeGeneratorConfiguration);
 
     List<EmpiricGeneratorConfiguration> blueEdgeGeneratorConfiguration = List.of(
-            new EmpiricGeneratorConfiguration(15, 29, 0.2),
-            new EmpiricGeneratorConfiguration(29, 45, 0.4),
+            new EmpiricGeneratorConfiguration(15, 28, 0.2),
+            new EmpiricGeneratorConfiguration(29, 44, 0.4),
             new EmpiricGeneratorConfiguration(45, 65, 0.4)
     );
 
