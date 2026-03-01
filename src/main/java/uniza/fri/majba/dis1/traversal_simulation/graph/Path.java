@@ -19,9 +19,9 @@ public class Path {
         return endingNode != null;
     }
 
-    public PathOutput pickNextPath() {
+    public PathOutput pickNextPath(double departureTime) {
         if (connectingPaths.size() == 1) {
-            return new PathOutput(pathEdges.getFirst().getTraversalTime(), connectingPaths.getFirst());
+            return new PathOutput(pathEdges.getFirst().getTraversalTime(departureTime), connectingPaths.getFirst());
         }
 
         double mininumTime = Double.MAX_VALUE;
@@ -29,7 +29,7 @@ public class Path {
 
         for (int i = 1; i < connectingPaths.size(); i++) {
             Edge<Node> currentEdge = pathEdges.get(i);
-            double traversalTime = currentEdge.getTraversalTime();
+            double traversalTime = currentEdge.getTraversalTime(departureTime);
 
             if (traversalTime < mininumTime) {
                 mininumTime = traversalTime;

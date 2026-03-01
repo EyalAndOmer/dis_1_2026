@@ -3,7 +3,6 @@ package uniza.fri.majba.dis1;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
-import java.util.Collections;
 import java.util.Properties;
 import java.util.Random;
 
@@ -24,7 +23,7 @@ public enum Config {
         } catch (IOException ex) {
             throw new UncheckedIOException("Failed to load " + PROPERTIES_PATH, ex);
         }
-        this.properties = (Properties) Collections.unmodifiableMap(props);
+        this.properties = props;
     }
 
     public Properties getProperties() {
