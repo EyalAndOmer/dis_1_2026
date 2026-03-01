@@ -28,8 +28,8 @@ public final class KEdge<V> extends Edge<V> {
     public double getTraversalTime(double departureTime) {
         double speed = generator().generate();
         if (departureTime > K_SLOWDOWN_THRESHOLD) {
-            double slowdownPercent = slowdownGenerator.generate();
-            speed = speed * (100.0 - slowdownPercent) / 100.0;
+            double slowdownPercentage = slowdownGenerator.generate();
+            speed = speed * (100.0 - slowdownPercentage) / 100.0;
         }
         return weight() / speed;
     }
