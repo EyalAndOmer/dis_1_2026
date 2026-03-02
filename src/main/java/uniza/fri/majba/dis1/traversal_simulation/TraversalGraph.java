@@ -270,7 +270,7 @@ public final class TraversalGraph {
         // Žilina --> Rajecké Teplice --> Strečno --> Divinka --> Žilina
         List<Path> route6 = List.of(pathZilinaRT, pathRTStrecno, pathStrechnoDivinka, pathDivinkaZilina);
 
-        return List.of(route6);
+        return List.of(route1, route2, route3, route4, route5, route6);
     }
 }
 
