@@ -15,29 +15,24 @@ public class Path {
         this.endingNode = endingNode;
     }
 
-    public boolean isPathEnd() {
-        return endingNode != null;
-    }
-
     public PathOutput pickNextPath(double departureTime) {
-        if (connectingPaths.size() == 1) {
-            return new PathOutput(pathEdges.getFirst().getTraversalTime(departureTime), connectingPaths.getFirst());
+        if (connectingPaths == null || connectingPaths.isEmpty()) {
+            throw new IllegalStateException("No connecting paths available");
         }
 
-        double mininumTime = Double.MAX_VALUE;
+        double minimumTime = Double.MAX_VALUE;
         int minimumTimeIndex = 0;
 
-        for (int i = 1; i < connectingPaths.size(); i++) {
-            Edge<Node> currentEdge = pathEdges.get(i);
-            double traversalTime = currentEdge.getTraversalTime(departureTime);
+        for (int i = 0; i < connectingPaths.size(); i++) {
+            double traversalTime = pathEdges.get(i).getTraversalTime(departureTime);
 
-            if (traversalTime < mininumTime) {
-                mininumTime = traversalTime;
+            if (traversalTime < minimumTime) {
+                minimumTime = traversalTime;
                 minimumTimeIndex = i;
             }
         }
 
-        return new PathOutput(mininumTime, connectingPaths.get(minimumTimeIndex));
+        return new PathOutput(minimumTime, connectingPaths.get(minimumTimeIndex));
     }
 
     public record PathOutput(double time, Path path) {}

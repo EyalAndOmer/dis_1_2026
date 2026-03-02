@@ -43,11 +43,7 @@ public abstract class SimulationCore {
     /**
      * Waits while the simulation is paused. If the simulation is not paused, the method does nothing.
      */
-    private void waitWhilePaused() {
-        if (!paused) {
-            return;
-        }
-
+    void waitWhilePaused() {
         pauseLock.lock();
         try {
             while (paused) {
@@ -64,7 +60,12 @@ public abstract class SimulationCore {
      * Pauses the simulation. The simulation will remain paused until resumeSimulation() is called.
      */
     public void pauseSimulation() {
-        paused = true;
+        pauseLock.lock();
+        try {
+            paused = true;
+        } finally {
+            pauseLock.unlock();
+        }
     }
 
     /**
@@ -74,7 +75,7 @@ public abstract class SimulationCore {
         pauseLock.lock();
         try {
             paused = false;
-            resumeCondition.signal();
+            resumeCondition.signalAll();
         } finally {
             pauseLock.unlock();
         }

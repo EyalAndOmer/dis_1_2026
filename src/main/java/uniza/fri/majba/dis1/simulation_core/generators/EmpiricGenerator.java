@@ -63,5 +63,5 @@ public abstract class EmpiricGenerator extends Generator {
         return pickedGenerator.generate();
     }
 
-
+    private record ProbabilityGeneratorPair(double probability, Generator generator) { }
 }
