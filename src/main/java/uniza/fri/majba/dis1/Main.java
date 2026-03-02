@@ -23,7 +23,7 @@ public class Main {
 //                getClass().getResource("/chart_styles.css").toExternalForm()
 //        );
 //
-//        stage.setTitle("Simulácia trasy");
+//        stage.setTitle("DIS semestralna praca 1");
 //        stage.setScene(scene);
 //        stage.setMinWidth(1200);
 //        stage.setMinHeight(760);
@@ -31,7 +31,13 @@ public class Main {
 //    }
 
     public static void main(String[] args) {
-        TraversalReplication traversalReplication = new TraversalReplication();
-        MonteCarloSimulationCore simulationCore = new MonteCarloSimulationCore(traversalReplication);
-        simulationCore.simulate(1);    }
+        for (int i = -100; i < 100; i++) {
+            Config.getSeedGenerator().setSeed(i);
+            TraversalReplication traversalReplication = new TraversalReplication();
+            MonteCarloSimulationCore simulationCore = new MonteCarloSimulationCore(traversalReplication);
+            simulationCore.simulate(500);
+        }
+
+
+    }
 }

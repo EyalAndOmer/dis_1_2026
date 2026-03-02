@@ -18,4 +18,11 @@ public record Node(String name, NodeType type) {
     public int hashCode() {
         return Objects.hashCode(name);
     }
+
+    @Override
+    public String toString() {
+        return "Node{" +
+                "name='" + name + '\'' +
+                '}';
+    }
 }

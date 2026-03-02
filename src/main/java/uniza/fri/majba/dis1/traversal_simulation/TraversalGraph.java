@@ -11,7 +11,7 @@ import java.util.List;
 
 import static uniza.fri.majba.dis1.traversal_simulation.TraversalSimulationConstants.*;
 
-public class TraversalGraph {
+public final class TraversalGraph {
 
     private TraversalGraph() {
         // utility class
@@ -34,16 +34,16 @@ public class TraversalGraph {
 
 
         // Edges
-        Edge<Node> zilinaK = new Edge<>(zilina, k, EdgeColor.BLACK, 2, BLACK_EDGE_GENERATOR);
+        Edge<Node> zilinaK = new KEdge<>(zilina, k, EdgeColor.BLACK, 2, BLACK_EDGE_GENERATOR, K_GENERATOR);
         Edge<Node> kZilina = new KEdge<>(k, zilina, EdgeColor.BLACK, 2, BLACK_EDGE_GENERATOR, K_GENERATOR);
 
-        Edge<Node> divinkaK = new Edge<>(divinka, k, EdgeColor.RED, 2, RED_EDGE_GENERATOR);
+        Edge<Node> divinkaK = new KEdge<>(divinka, k, EdgeColor.RED, 2, RED_EDGE_GENERATOR, K_GENERATOR);
         Edge<Node> kDivinka = new KEdge<>(k, divinka, EdgeColor.RED, 2, RED_EDGE_GENERATOR, K_GENERATOR);
 
-        Edge<Node> rajeckeTepliceK = new Edge<>(rajeckeTeplice, k, EdgeColor.GREEN, 2, GREEN_EDGE_GENERATOR);
+        Edge<Node> rajeckeTepliceK = new KEdge<>(rajeckeTeplice, k, EdgeColor.GREEN, 2, GREEN_EDGE_GENERATOR, K_GENERATOR);
         Edge<Node> kRajeckeTeplice = new KEdge<>(k, rajeckeTeplice, EdgeColor.GREEN, 2, GREEN_EDGE_GENERATOR, K_GENERATOR);
 
-        Edge<Node> strecnoK = new Edge<>(strecno, k, EdgeColor.BLUE, 4, BLUE_EDGE_GENERATOR);
+        Edge<Node> strecnoK = new KEdge<>(strecno, k, EdgeColor.BLUE, 4, BLUE_EDGE_GENERATOR, K_GENERATOR);
         Edge<Node> kStrecno = new KEdge<>(k, strecno, EdgeColor.BLUE, 4, BLUE_EDGE_GENERATOR, K_GENERATOR);
 
 
@@ -69,7 +69,7 @@ public class TraversalGraph {
         Edge<Node> strecnoToZilinaStrecnoSouth = new Edge<>(strecno, zilinaStrecnoSouth, EdgeColor.BLACK, 3, BLACK_EDGE_GENERATOR);
 
 
-        // Strečno - Rajecké Teplice (cez junction)
+        // Strečno - Rajecké Teplice
         Edge<Node> strecnoToStrecnoRajeckeTepliceBlue = new Edge<>(strecno, strecnoRajeckeTeplice, EdgeColor.BLUE, 5, BLUE_EDGE_GENERATOR);
         Edge<Node> strecnoRajeckeTepliceToStrecnoBlue = new Edge<>(strecnoRajeckeTeplice, strecno, EdgeColor.BLUE, 5, BLUE_EDGE_GENERATOR);
 
@@ -80,7 +80,7 @@ public class TraversalGraph {
         Edge<Node> rajeckeTepliceToStrecnoRajeckeTeplice = new Edge<>(rajeckeTeplice, strecnoRajeckeTeplice, EdgeColor.BLUE, 8, BLUE_EDGE_GENERATOR);
 
 
-        // Rajecké Teplice - Divinka (cez X1, X1-X2, X3-Divinka)
+        // Rajecké Teplice - Divinka
         Edge<Node> rajeckeTepliceToRajeckeTepliceX1 = new Edge<>(rajeckeTeplice, rajeckeTepliceX1, EdgeColor.BLUE, 1, BLUE_EDGE_GENERATOR);
         Edge<Node> rajeckeTepliceX1ToRajeckeTeplice = new Edge<>(rajeckeTepliceX1, rajeckeTeplice, EdgeColor.BLUE, 1, BLUE_EDGE_GENERATOR);
 
@@ -96,213 +96,160 @@ public class TraversalGraph {
         Edge<Node> divinkaToX3Divinka = new Edge<>(divinka, x3Divinka, EdgeColor.BLACK, 1, BLACK_EDGE_GENERATOR);
 
 
-        // Paths
-        // Žilina – Divinka
-        // Žilina --> Divinka
-        Path zilinaDivinka_A = new Path(zilina, List.of(new Path(divinka, List.of(), List.of(), divinka)), List.of(zilinaDivinka1), null);
-        //Žilina --> Divinka
-        Path zilinaDivinka_B = new Path(zilina, List.of(new Path(divinka, List.of(), List.of(), divinka)), List.of(zilinaDivinka2), null);
-        // Žilina --> K --> Divinka
-        Path zilinaDivinka_C = new Path(zilina,
-                List.of(new Path(k, List.of(new Path(divinka, List.of(), List.of(), divinka)), List.of(kDivinka), null)),
-                List.of(zilinaK), null);
-        Path pathZilinaDivinka = new Path(zilina,
-                List.of(zilinaDivinka_A, zilinaDivinka_B, zilinaDivinka_C),
-                List.of(zilinaDivinka1, zilinaDivinka2, zilinaK), null);
+        // Paths - Shared terminal and via-K paths
+        Path terminalDivinka = Path.from(divinka).build();
+        Path terminalZilina = Path.from(zilina).build();
+        Path terminalStrecno = Path.from(strecno).build();
+        Path terminalRT = Path.from(rajeckeTeplice).build();
 
-        // Divinka --> Žilina
-        Path divinkaZilina_A = new Path(divinka, List.of(new Path(zilina, List.of(), List.of(), zilina)), List.of(divinkaZilina1), null);
-        Path divinkaZilina_B = new Path(divinka, List.of(new Path(zilina, List.of(), List.of(), zilina)), List.of(divinkaZilina2), null);
-        Path divinkaZilina_C = new Path(divinka,
-                List.of(new Path(k, List.of(new Path(zilina, List.of(), List.of(), zilina)), List.of(kZilina), null)),
-                List.of(divinkaK), null);
-        Path pathDivinkaZilina = new Path(divinka,
-                List.of(divinkaZilina_A, divinkaZilina_B, divinkaZilina_C),
-                List.of(divinkaZilina1, divinkaZilina2, divinkaK), null);
+        // Shared K-to-destination paths
+        Path kToDivinka = Path.from(k)
+                .nextPaths(List.of(terminalDivinka))
+                .throughEdges(List.of(kDivinka))
+                .build();
+        Path kToZilina = Path.from(k)
+                .nextPaths(List.of(terminalZilina))
+                .throughEdges(List.of(kZilina))
+                .build();
+        Path kToStrecno = Path.from(k)
+                .nextPaths(List.of(terminalStrecno))
+                .throughEdges(List.of(kStrecno))
+                .build();
+        Path kToRT = Path.from(k)
+                .nextPaths(List.of(terminalRT))
+                .throughEdges(List.of(kRajeckeTeplice))
+                .build();
 
+        // Žilina ↔ Divinka
+        Path pathZilinaDivinka = Path.from(zilina)
+                .nextPaths(List.of(terminalDivinka, terminalDivinka, kToDivinka))
+                .throughEdges(List.of(zilinaDivinka1, zilinaDivinka2, zilinaK))
+                .build();
 
-        // Žilina – Strečno
-        // Žilina --> zilinaStrecnoNorth --> Strečno
-        Path zilinaNorthJunction = new Path(zilinaStrecnoNorth,
-                List.of(new Path(strecno, List.of(), List.of(), strecno)),
-                List.of(zilinaStrecnoNorthToStrecno), null);
-        Path zilinaStrecno_A = new Path(zilina, List.of(zilinaNorthJunction), List.of(zilinaStrecnoNorthEdge), null);
-        // Žilina --> zilinaStrecnoSouth --> Strečno
-        Path zilinaSouthJunction = new Path(zilinaStrecnoSouth,
-                List.of(new Path(strecno, List.of(), List.of(), strecno)),
-                List.of(zilinaStrecnoSouthToStrecno), null);
-        Path zilinaStrecno_B = new Path(zilina, List.of(zilinaSouthJunction), List.of(zilinaToZilinaStrecnoSouth), null);
-        // Žilina --> K --> Strečno
-        Path zilinaStrecno_C = new Path(zilina,
-                List.of(new Path(k, List.of(new Path(strecno, List.of(), List.of(), strecno)), List.of(kStrecno), null)),
-                List.of(zilinaK), null);
-        Path pathZilinaStrecno = new Path(zilina,
-                List.of(zilinaStrecno_A, zilinaStrecno_B, zilinaStrecno_C),
-                List.of(zilinaStrecnoNorthEdge, zilinaToZilinaStrecnoSouth, zilinaK), null);
+        Path pathDivinkaZilina = Path.from(divinka)
+                .nextPaths(List.of(terminalZilina, terminalZilina, kToZilina))
+                .throughEdges(List.of(divinkaZilina1, divinkaZilina2, divinkaK))
+                .build();
 
-        // Strečno --> zilinaStrecnoNorth --> Žilina
-        Path strecnoNorthJunction = new Path(zilinaStrecnoNorth,
-                List.of(new Path(zilina, List.of(), List.of(), zilina)),
-                List.of(strecnoNorthZilinaEdge), null);
-        Path strecnoZilina_A = new Path(strecno, List.of(strecnoNorthJunction), List.of(strecnoToZilinaStrecnoNorth), null);
-        // Strečno --> zilinaStrecnoSouth --> Žilina
-        Path strecnoSouthJunction = new Path(zilinaStrecnoSouth,
-                List.of(new Path(zilina, List.of(), List.of(), zilina)),
-                List.of(zilinaStrecnoSouthToZilina), null);
-        Path strecnoZilina_B = new Path(strecno, List.of(strecnoSouthJunction), List.of(strecnoToZilinaStrecnoSouth), null);
-        // Strečno --> K --> Žilina
-        Path strecnoZilina_C = new Path(strecno,
-                List.of(new Path(k, List.of(new Path(zilina, List.of(), List.of(), zilina)), List.of(kZilina), null)),
-                List.of(strecnoK), null);
-        Path pathStrecnoZilina = new Path(strecno,
-                List.of(strecnoZilina_A, strecnoZilina_B, strecnoZilina_C),
-                List.of(strecnoToZilinaStrecnoNorth, strecnoToZilinaStrecnoSouth, strecnoK), null);
+        // Žilina ↔ Strečno
+        Path zilinaNorthJunction = Path.from(zilinaStrecnoNorth)
+                .nextPaths(List.of(terminalStrecno))
+                .throughEdges(List.of(zilinaStrecnoNorthToStrecno))
+                .build();
+        Path strecnoZilina_A = Path.from(zilinaStrecnoNorth)
+                .nextPaths(List.of(terminalZilina))
+                .throughEdges(List.of(strecnoNorthZilinaEdge))
+                .build();
 
+        Path zilinaSouthJunction = Path.from(zilinaStrecnoSouth)
+                .nextPaths(List.of(terminalStrecno))
+                .throughEdges(List.of(zilinaStrecnoSouthToStrecno))
+                .build();
+        Path strecnoZilina_B = Path.from(zilinaStrecnoSouth)
+                .nextPaths(List.of(terminalZilina))
+                .throughEdges(List.of(zilinaStrecnoSouthToZilina))
+                .build();
 
-        // Žilina – Rajecké Teplice
-        // Žilina --> zilinaStrecnoNorth --> Strečno --> strecnoRajeckeTeplice --> RT
-        Path strecnoRT_junction = new Path(strecnoRajeckeTeplice,
-                List.of(new Path(rajeckeTeplice, List.of(), List.of(), rajeckeTeplice)),
-                List.of(strecnoRajeckeTepliceToRajeckeTeplice), null);
-        Path strecnoToRT_blue = new Path(strecno, List.of(strecnoRT_junction), List.of(strecnoToStrecnoRajeckeTepliceBlue), null);
-        Path strecnoToRT_black = new Path(strecno, List.of(strecnoRT_junction), List.of(strecnoToStrecnoRajeckeTepliceBlack), null);
-        Path strecnoToRT = new Path(strecno,
-                List.of(strecnoToRT_blue, strecnoToRT_black),
-                List.of(strecnoToStrecnoRajeckeTepliceBlue, strecnoToStrecnoRajeckeTepliceBlack), null);
+        Path pathZilinaStrecno = Path.from(zilina)
+                .nextPaths(List.of(zilinaNorthJunction, zilinaSouthJunction, kToStrecno))
+                .throughEdges(List.of(zilinaStrecnoNorthEdge, zilinaToZilinaStrecnoSouth, zilinaK))
+                .build();
 
-        Path northJunctionToStrecnoToRT = new Path(zilinaStrecnoNorth, List.of(strecnoToRT), List.of(zilinaStrecnoNorthToStrecno), null);
-        Path zilinaRT_A = new Path(zilina, List.of(northJunctionToStrecnoToRT), List.of(zilinaStrecnoNorthEdge), null);
+        Path pathStrecnoZilina = Path.from(strecno)
+                .nextPaths(List.of(strecnoZilina_A, strecnoZilina_B, kToZilina))
+                .throughEdges(List.of(strecnoToZilinaStrecnoNorth, strecnoToZilinaStrecnoSouth, strecnoK))
+                .build();
 
-        // Žilina --> zilinaStrecnoSouth --> Strečno --> strecnoRajeckeTeplice --> RT
-        Path southJunctionToStrecnoToRT = new Path(zilinaStrecnoSouth, List.of(strecnoToRT), List.of(zilinaStrecnoSouthToStrecno), null);
-        Path zilinaRT_B = new Path(zilina, List.of(southJunctionToStrecnoToRT), List.of(zilinaToZilinaStrecnoSouth), null);
+        // Žilina ↔ Rajecké Teplice
+        Path pathZilinaRT = Path.from(zilina)
+                .nextPaths(List.of(kToRT))
+                .throughEdges(List.of(zilinaK))
+                .build();
 
-        // Žilina --> K --> RT
-        Path zilinaRT_C = new Path(zilina,
-                List.of(new Path(k, List.of(new Path(rajeckeTeplice, List.of(), List.of(), rajeckeTeplice)), List.of(kRajeckeTeplice), null)),
-                List.of(zilinaK), null);
+        Path pathRTZilina = Path.from(rajeckeTeplice)
+                .nextPaths(List.of(kToZilina))
+                .throughEdges(List.of(rajeckeTepliceK))
+                .build();
 
-        Path pathZilinaRT = new Path(zilina,
-                List.of(zilinaRT_A, zilinaRT_B, zilinaRT_C),
-                List.of(zilinaStrecnoNorthEdge, zilinaToZilinaStrecnoSouth, zilinaK), null);
+        // Divinka ↔ Strečno
+        Path pathDivinkaStrecno = Path.from(divinka)
+                .nextPaths(List.of(kToStrecno))
+                .throughEdges(List.of(divinkaK))
+                .build();
 
-        // Rajecké Teplice --> Žilina
-        // RT --> strecnoRajeckeTeplice --> Strečno --> north junction --> Žilina
-        Path rtJunction = new Path(strecnoRajeckeTeplice,
-                List.of(
-                        new Path(strecno, List.of(strecnoZilina_A), List.of(strecnoToZilinaStrecnoNorth), null),
-                        new Path(strecno, List.of(strecnoZilina_B), List.of(strecnoToZilinaStrecnoSouth), null),
-                        new Path(strecno, List.of(strecnoZilina_C), List.of(strecnoK), null)
-                ),
-                List.of(strecnoRajeckeTepliceToStrecnoBlue, strecnoRajeckeTepliceToStrecnoBlack, strecnoRajeckeTepliceToStrecnoBlue),
-                null);
-        Path rtZilina_A = new Path(rajeckeTeplice, List.of(rtJunction), List.of(rajeckeTepliceToStrecnoRajeckeTeplice), null);
+        Path pathStrechnoDivinka = Path.from(strecno)
+                .nextPaths(List.of(kToDivinka))
+                .throughEdges(List.of(strecnoK))
+                .build();
 
-        // RT --> K --> Žilina
-        Path rtZilina_B = new Path(rajeckeTeplice,
-                List.of(new Path(k, List.of(new Path(zilina, List.of(), List.of(), zilina)), List.of(kZilina), null)),
-                List.of(rajeckeTepliceK), null);
+        // Divinka ↔ Rajecké Teplice
+        Path x1ToRT = Path.from(rajeckeTepliceX1)
+                .nextPaths(List.of(terminalRT))
+                .throughEdges(List.of(rajeckeTepliceX1ToRajeckeTeplice))
+                .build();
+        Path divinkaRT_A_direct = Path.from(x3Divinka)
+                .nextPaths(List.of(x1ToRT))
+                .throughEdges(List.of(x3DivinkaToRajeckeTepliceX1))
+                .build();
 
-        Path pathRTZilina = new Path(rajeckeTeplice,
-                List.of(rtZilina_A, rtZilina_B),
-                List.of(rajeckeTepliceToStrecnoRajeckeTeplice, rajeckeTepliceK), null);
+        Path x1X2ToX1_path = Path.from(x1X2)
+                .nextPaths(List.of(x1ToRT))
+                .throughEdges(List.of(x1X2ToRajeckeTepliceX1))
+                .build();
+        Path divinkaRT_A_viaX1X2 = Path.from(x3Divinka)
+                .nextPaths(List.of(x1X2ToX1_path))
+                .throughEdges(List.of(x1X2ToX3Divinka))
+                .build();
 
+        Path pathDivinkaRT = Path.from(divinka)
+                .nextPaths(List.of(divinkaRT_A_direct, divinkaRT_A_viaX1X2, kToRT))
+                .throughEdges(List.of(divinkaToX3Divinka, divinkaToX3Divinka, divinkaK))
+                .build();
 
-        // Divinka – Strečno
-        // Divinka --> K --> Strečno
-        Path pathDivinkaStrecno = new Path(divinka,
-                List.of(new Path(k, List.of(new Path(strecno, List.of(), List.of(), strecno)), List.of(kStrecno), null)),
-                List.of(divinkaK), null);
+        // Rajecké Teplice → Divinka
+        Path x3ToDivinka = Path.from(x3Divinka)
+                .nextPaths(List.of(terminalDivinka))
+                .throughEdges(List.of(x3DivinkaToDivinka))
+                .build();
+        Path x1X2ToX3 = Path.from(x1X2)
+                .nextPaths(List.of(x3ToDivinka))
+                .throughEdges(List.of(x1X2ToX3Divinka))
+                .build();
 
-        // Strečno --> Divinka
-        Path pathStrechnoDivinka = new Path(strecno,
-                List.of(new Path(k, List.of(new Path(divinka, List.of(), List.of(), divinka)), List.of(kDivinka), null)),
-                List.of(strecnoK), null);
+        Path rtDivinka_A = Path.from(rajeckeTepliceX1)
+                .nextPaths(List.of(x1X2ToX3, x3ToDivinka))
+                .throughEdges(List.of(rajeckeTepliceX1ToX1X2, rajeckeTepliceX1ToX3Divinka))
+                .build();
 
+        Path pathRTDivinka = Path.from(rajeckeTeplice)
+                .nextPaths(List.of(rtDivinka_A, kToDivinka))
+                .throughEdges(List.of(rajeckeTepliceToRajeckeTepliceX1, rajeckeTepliceK))
+                .build();
 
-        // Divinka – Rajecké Teplice
-        // Divinka --> x3Divinka --> rajeckeTepliceX1 --> RT
-        Path x1ToRT = new Path(rajeckeTepliceX1,
-                List.of(new Path(rajeckeTeplice, List.of(), List.of(), rajeckeTeplice)),
-                List.of(rajeckeTepliceX1ToRajeckeTeplice), null);
-        Path x3ToX1_direct = new Path(x3Divinka, List.of(x1ToRT), List.of(x3DivinkaToRajeckeTepliceX1), null);
+        // Strečno ↔ Rajecké Teplice
+        Path strecnoRT_junction = Path.from(strecnoRajeckeTeplice)
+                .nextPaths(List.of(terminalRT))
+                .throughEdges(List.of(strecnoRajeckeTepliceToRajeckeTeplice))
+                .build();
+        Path pathStrecnoRT = Path.from(strecno)
+                .nextPaths(List.of(strecnoRT_junction, strecnoRT_junction, kToRT))
+                .throughEdges(List.of(strecnoToStrecnoRajeckeTepliceBlue, strecnoToStrecnoRajeckeTepliceBlack, strecnoK))
+                .build();
 
-        // Divinka --> x3Divinka --> x1X2 --> rajeckeTepliceX1 --> RT
-        Path x1X2ToX1 = new Path(x1X2, List.of(x1ToRT), List.of(x1X2ToRajeckeTepliceX1), null);
-        Path x3ToX1X2 = new Path(x3Divinka, List.of(x1X2ToX1), List.of(x1X2ToX3Divinka), null);
-        Path x3ToRT = new Path(x3Divinka,
-                List.of(x3ToX1_direct, x3ToX1X2),
-                List.of(x3DivinkaToRajeckeTepliceX1, x1X2ToX3Divinka), null);
+        Path rtStrecno_A = Path.from(strecnoRajeckeTeplice)
+                .nextPaths(List.of(terminalStrecno))
+                .throughEdges(List.of(strecnoRajeckeTepliceToStrecnoBlue))
+                .build();
 
-        Path divinkaRT_A = new Path(divinka, List.of(x3ToRT), List.of(divinkaToX3Divinka), null);
+        Path rtStrecno_B = Path.from(strecnoRajeckeTeplice)
+                .nextPaths(List.of(terminalStrecno))
+                .throughEdges(List.of(strecnoRajeckeTepliceToStrecnoBlack))
+                .build();
 
-        // Divinka --> K --> RT
-        Path divinkaRT_B = new Path(divinka,
-                List.of(new Path(k, List.of(new Path(rajeckeTeplice, List.of(), List.of(), rajeckeTeplice)), List.of(kRajeckeTeplice), null)),
-                List.of(divinkaK), null);
-
-        Path pathDivinkaRT = new Path(divinka,
-                List.of(divinkaRT_A, divinkaRT_B),
-                List.of(divinkaToX3Divinka, divinkaK), null);
-
-        // Rajecké Teplice --> Divinka
-        // RT --> rajeckeTepliceX1 --> x1X2 --> x3Divinka --> Divinka
-        Path x3ToDivinka = new Path(x3Divinka,
-                List.of(new Path(divinka, List.of(), List.of(), divinka)),
-                List.of(x3DivinkaToDivinka), null);
-        Path x1X2ToX3 = new Path(x1X2, List.of(x3ToDivinka), List.of(x1X2ToX3Divinka), null);
-        Path x1ToX1X2 = new Path(rajeckeTepliceX1, List.of(x1X2ToX3), List.of(rajeckeTepliceX1ToX1X2), null);
-
-        // RT --> rajeckeTepliceX1 --> x3Divinka --> Divinka
-        Path x1ToX3_direct = new Path(rajeckeTepliceX1, List.of(x3ToDivinka), List.of(rajeckeTepliceX1ToX3Divinka), null);
-
-        Path x1ToDivinka = new Path(rajeckeTepliceX1,
-                List.of(x1ToX1X2, x1ToX3_direct),
-                List.of(rajeckeTepliceX1ToX1X2, rajeckeTepliceX1ToX3Divinka), null);
-
-        Path rtDivinka_A = new Path(rajeckeTeplice, List.of(x1ToDivinka), List.of(rajeckeTepliceToRajeckeTepliceX1), null);
-
-        // RT --> K --> Divinka
-        Path rtDivinka_B = new Path(rajeckeTeplice,
-                List.of(new Path(k, List.of(new Path(divinka, List.of(), List.of(), divinka)), List.of(kDivinka), null)),
-                List.of(rajeckeTepliceK), null);
-
-        Path pathRTDivinka = new Path(rajeckeTeplice,
-                List.of(rtDivinka_A, rtDivinka_B),
-                List.of(rajeckeTepliceToRajeckeTepliceX1, rajeckeTepliceK), null);
-
-
-        // Strečno – Rajecké Teplice
-        // Strečno --> strecnoRajeckeTeplice --> RT
-        Path strecnoRT_A = new Path(strecno, List.of(strecnoRT_junction), List.of(strecnoToStrecnoRajeckeTepliceBlue), null);
-        // Strečno --> strecnoRajeckeTeplice --> RT
-        Path strecnoRT_B = new Path(strecno, List.of(strecnoRT_junction), List.of(strecnoToStrecnoRajeckeTepliceBlack), null);
-        // Strečno --> K --> RT
-        Path strecnoRT_C = new Path(strecno,
-                List.of(new Path(k, List.of(new Path(rajeckeTeplice, List.of(), List.of(), rajeckeTeplice)), List.of(kRajeckeTeplice), null)),
-                List.of(strecnoK), null);
-        Path pathStrecnoRT = new Path(strecno,
-                List.of(strecnoRT_A, strecnoRT_B, strecnoRT_C),
-                List.of(strecnoToStrecnoRajeckeTepliceBlue, strecnoToStrecnoRajeckeTepliceBlack, strecnoK), null);
-
-        // Rajecké Teplice --> Strečno
-        // RT --> strecnoRajeckeTeplice --> Strečno
-        Path rtStrecno_junction_blue = new Path(strecnoRajeckeTeplice,
-                List.of(new Path(strecno, List.of(), List.of(), strecno)),
-                List.of(strecnoRajeckeTepliceToStrecnoBlue), null);
-        Path rtStrecno_A = new Path(rajeckeTeplice, List.of(rtStrecno_junction_blue), List.of(rajeckeTepliceToStrecnoRajeckeTeplice), null);
-        // RT --> strecnoRajeckeTeplice --> Strečno
-        Path rtStrecno_junction_black = new Path(strecnoRajeckeTeplice,
-                List.of(new Path(strecno, List.of(), List.of(), strecno)),
-                List.of(strecnoRajeckeTepliceToStrecnoBlack), null);
-        Path rtStrecno_B = new Path(rajeckeTeplice, List.of(rtStrecno_junction_black), List.of(rajeckeTepliceToStrecnoRajeckeTeplice), null);
-        // RT --> K --> Strečno
-        Path rtStrecno_C = new Path(rajeckeTeplice,
-                List.of(new Path(k, List.of(new Path(strecno, List.of(), List.of(), strecno)), List.of(kStrecno), null)),
-                List.of(rajeckeTepliceK), null);
-        Path pathRTStrecno = new Path(rajeckeTeplice,
-                List.of(rtStrecno_A, rtStrecno_B, rtStrecno_C),
-                List.of(rajeckeTepliceToStrecnoRajeckeTeplice, rajeckeTepliceToStrecnoRajeckeTeplice, rajeckeTepliceK), null);
+        Path pathRTStrecno = Path.from(rajeckeTeplice)
+                .nextPaths(List.of(rtStrecno_A, rtStrecno_B, kToStrecno))
+                .throughEdges(List.of(rajeckeTepliceToStrecnoRajeckeTeplice, rajeckeTepliceToStrecnoRajeckeTeplice, rajeckeTepliceK))
+                .build();
 
 
         // Žilina --> Divinka --> Strečno --> Rajecké Teplice --> Žilina
@@ -323,7 +270,7 @@ public class TraversalGraph {
         // Žilina --> Rajecké Teplice --> Strečno --> Divinka --> Žilina
         List<Path> route6 = List.of(pathZilinaRT, pathRTStrecno, pathStrechnoDivinka, pathDivinkaZilina);
 
-        return List.of(route1, route2, route3, route4, route5, route6);
+        return List.of(route6);
     }
 }
 

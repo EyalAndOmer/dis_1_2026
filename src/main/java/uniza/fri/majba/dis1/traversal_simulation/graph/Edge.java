@@ -48,4 +48,14 @@ public class Edge<V> {
     public double getTraversalTime(double departureTime) {
         return weight / generator.generate();
     }
+
+    @Override
+    public String toString() {
+        return "Edge{" +
+                "from=" + from +
+                ", to=" + to +
+                ", weight=" + weight +
+                ", edgeColor=" + edgeColor +
+                '}';
+    }
 }

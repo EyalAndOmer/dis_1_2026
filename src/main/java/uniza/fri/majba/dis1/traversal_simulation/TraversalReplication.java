@@ -1,24 +1,38 @@
 package uniza.fri.majba.dis1.traversal_simulation;
 
 import uniza.fri.majba.dis1.simulation_core.Replication;
+import uniza.fri.majba.dis1.simulation_core.statistics.WeightedSumStatistic;
 import uniza.fri.majba.dis1.traversal_simulation.graph.Path;
 
 import java.util.List;
+import java.util.Objects;
 
 public final class TraversalReplication implements Replication {
-    private List<List<Path>> routes;
+    private List<RouteParameters> routes;
+    // Start at 6:00 at the morning
+    public final int SIMULATION_START_TIME = 6;
 
     @Override
     public void beforeAllReplications() {
         // TODO pridat do konfiguracie aplikacie -
         // 1. Kolko bodov chcem mat v grafe
         // 2. Kolko percent replikacii chcem vidiet
-        List<List<Path>> routes = TraversalGraph.buildRoutes();
+        routes = TraversalGraph.buildRoutes().stream().map(route -> new RouteParameters(route, new WeightedSumStatistic())).toList();
     }
 
     @Override
     public void afterAllReplications() {
+        double minTime = Double.MAX_VALUE;
+        int minTimeRouteIndex = -1;
+        for (int i = 0; i < routes.size(); i++) {
+            RouteParameters route = routes.get(i);
+            if (route.weightedSumStatistic().calculateStatistic() < minTime) {
+                minTime = route.weightedSumStatistic().calculateStatistic();
+                minTimeRouteIndex = i;
+            }
+        }
 
+        System.out.println("Best route is " + (minTimeRouteIndex + 1) + " with time: " + minTime);
     }
 
     @Override
@@ -32,14 +46,26 @@ public final class TraversalReplication implements Replication {
 
     @Override
     public void execute() {
-        for (List<Path> route : routes) {
-            double departureTime = 0;
+        for (RouteParameters route : routes) {
+            double currentPathTime = SIMULATION_START_TIME;
 
-            for (Path path : route) {
-                Path.PathOutput pathOutput = path.pickNextPath(departureTime);
-                departureTime += pathOutput.time();
+            for (Path path : route.path()) {
+                Path.PathOutput pathOutput = path.pickNextPath(currentPathTime);
+                Path previousPath = null;
+                currentPathTime += pathOutput.time();
+
+                while (!pathOutput.path().getConnectingPaths().isEmpty()) {
+                    pathOutput = pathOutput.path().pickNextPath(currentPathTime);
+                    if (Objects.equals(previousPath, pathOutput.path())) {
+                        throw new IllegalStateException("Path output should not return the same path as the previous one.");
+                    }
+                    previousPath = pathOutput.path();
+                    currentPathTime += pathOutput.time();
+                }
             }
 
+            route.weightedSumStatistic().addValue(currentPathTime);
+            System.out.println("====================================================");
         }
     }
 }

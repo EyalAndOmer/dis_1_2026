@@ -4,7 +4,7 @@ import uniza.fri.majba.dis1.simulation_core.generators.*;
 
 import java.util.List;
 
-public class TraversalSimulationConstants {
+public final class TraversalSimulationConstants {
 
     public static final DiscreteUniformGenerator RED_EDGE_GENERATOR = new DiscreteUniformGenerator(55, 75);
     public static final ContinuousUniformGenerator GREEN_EDGE_GENERATOR = new ContinuousUniformGenerator(50, 80);
