@@ -21,36 +21,6 @@ public class Path {
         return new Builder(startingNode);
     }
 
-    public static class Builder {
-        private final Node startingNode;
-        private final List<Path> connectingPaths = new ArrayList<>();
-        private final List<Edge<Node>> pathEdges = new ArrayList<>();
-        private Node endingNode;
-
-        private Builder(Node startingNode) {
-            this.startingNode = startingNode;
-        }
-
-        public Builder nextPaths(List<Path> paths) {
-            this.connectingPaths.addAll(paths);
-            return this;
-        }
-
-        public Builder throughEdges(List<Edge<Node>> edges) {
-            this.pathEdges.addAll(edges);
-            return this;
-        }
-
-        public Builder to(Node endingNode) {
-            this.endingNode = endingNode;
-            return this;
-        }
-
-        public Path build() {
-            return new Path(startingNode, List.copyOf(connectingPaths), List.copyOf(pathEdges), endingNode);
-        }
-    }
-
     public PathOutput pickNextPath(double departureTime) {
         double minimumTime = Double.MAX_VALUE;
         int minimumTimeIndex = 0;
@@ -85,5 +55,35 @@ public class Path {
     @Override
     public int hashCode() {
         return Objects.hash(startingNode, connectingPaths, pathEdges, endingNode);
+    }
+
+    public static class Builder {
+        private final Node startingNode;
+        private final List<Path> connectingPaths = new ArrayList<>();
+        private final List<Edge<Node>> pathEdges = new ArrayList<>();
+        private Node endingNode;
+
+        private Builder(Node startingNode) {
+            this.startingNode = startingNode;
+        }
+
+        public Builder nextPaths(List<Path> paths) {
+            this.connectingPaths.addAll(paths);
+            return this;
+        }
+
+        public Builder throughEdges(List<Edge<Node>> edges) {
+            this.pathEdges.addAll(edges);
+            return this;
+        }
+
+        public Builder to(Node endingNode) {
+            this.endingNode = endingNode;
+            return this;
+        }
+
+        public Path build() {
+            return new Path(startingNode, List.copyOf(connectingPaths), List.copyOf(pathEdges), endingNode);
+        }
     }
 }

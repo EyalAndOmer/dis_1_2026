@@ -96,13 +96,11 @@ public final class TraversalGraph {
         Edge<Node> divinkaToX3Divinka = new Edge<>(divinka, x3Divinka, EdgeColor.BLACK, 1, BLACK_EDGE_GENERATOR);
 
 
-        // Paths - Shared terminal and via-K paths
         Path terminalDivinka = Path.from(divinka).build();
         Path terminalZilina = Path.from(zilina).build();
         Path terminalStrecno = Path.from(strecno).build();
         Path terminalRT = Path.from(rajeckeTeplice).build();
 
-        // Shared K-to-destination paths
         Path kToDivinka = Path.from(k)
                 .nextPaths(List.of(terminalDivinka))
                 .throughEdges(List.of(kDivinka))
@@ -120,7 +118,7 @@ public final class TraversalGraph {
                 .throughEdges(List.of(kRajeckeTeplice))
                 .build();
 
-        // Žilina ↔ Divinka
+        // Žilina - Divinka
         Path pathZilinaDivinka = Path.from(zilina)
                 .nextPaths(List.of(terminalDivinka, terminalDivinka, kToDivinka))
                 .throughEdges(List.of(zilinaDivinka1, zilinaDivinka2, zilinaK))
@@ -131,7 +129,7 @@ public final class TraversalGraph {
                 .throughEdges(List.of(divinkaZilina1, divinkaZilina2, divinkaK))
                 .build();
 
-        // Žilina ↔ Strečno
+        // Žilina - Strečno
         Path zilinaNorthJunction = Path.from(zilinaStrecnoNorth)
                 .nextPaths(List.of(terminalStrecno))
                 .throughEdges(List.of(zilinaStrecnoNorthToStrecno))
@@ -160,7 +158,7 @@ public final class TraversalGraph {
                 .throughEdges(List.of(strecnoToZilinaStrecnoNorth, strecnoToZilinaStrecnoSouth, strecnoK))
                 .build();
 
-        // Žilina ↔ Rajecké Teplice
+        // Žilina - Rajecké Teplice
         Path pathZilinaRT = Path.from(zilina)
                 .nextPaths(List.of(kToRT))
                 .throughEdges(List.of(zilinaK))
@@ -171,7 +169,7 @@ public final class TraversalGraph {
                 .throughEdges(List.of(rajeckeTepliceK))
                 .build();
 
-        // Divinka ↔ Strečno
+        // Divinka - Strečno
         Path pathDivinkaStrecno = Path.from(divinka)
                 .nextPaths(List.of(kToStrecno))
                 .throughEdges(List.of(divinkaK))
@@ -182,7 +180,7 @@ public final class TraversalGraph {
                 .throughEdges(List.of(strecnoK))
                 .build();
 
-        // Divinka ↔ Rajecké Teplice
+        // Divinka - Rajecké Teplice
         Path x1ToRT = Path.from(rajeckeTepliceX1)
                 .nextPaths(List.of(terminalRT))
                 .throughEdges(List.of(rajeckeTepliceX1ToRajeckeTeplice))
@@ -206,7 +204,7 @@ public final class TraversalGraph {
                 .throughEdges(List.of(divinkaToX3Divinka, divinkaToX3Divinka, divinkaK))
                 .build();
 
-        // Rajecké Teplice → Divinka
+        // Rajecké Teplice - Divinka
         Path x3ToDivinka = Path.from(x3Divinka)
                 .nextPaths(List.of(terminalDivinka))
                 .throughEdges(List.of(x3DivinkaToDivinka))
@@ -226,7 +224,7 @@ public final class TraversalGraph {
                 .throughEdges(List.of(rajeckeTepliceToRajeckeTepliceX1, rajeckeTepliceK))
                 .build();
 
-        // Strečno ↔ Rajecké Teplice
+        // Strečno - Rajecké Teplice
         Path strecnoRT_junction = Path.from(strecnoRajeckeTeplice)
                 .nextPaths(List.of(terminalRT))
                 .throughEdges(List.of(strecnoRajeckeTepliceToRajeckeTeplice))
