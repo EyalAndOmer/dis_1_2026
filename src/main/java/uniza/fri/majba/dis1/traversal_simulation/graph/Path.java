@@ -8,19 +8,22 @@ public class Path {
     private final Node startingNode;
     private final List<Path> connectingPaths;
     private final List<Edge<Node>> pathEdges;
-    private final Node endingNode;
 
-    public Path(Node startingNode, List<Path> connectingPaths, List<Edge<Node>> pathEdges, Node endingNode) {
+    public Path(Node startingNode, List<Path> connectingPaths, List<Edge<Node>> pathEdges) {
         this.startingNode = startingNode;
         this.connectingPaths = connectingPaths;
         this.pathEdges = pathEdges;
-        this.endingNode = endingNode;
     }
 
     public static Builder from(Node startingNode) {
         return new Builder(startingNode);
     }
 
+    /**
+     * Picks the next path to traverse based on the traversal time of the edges in the path. The path with the lowest traversal time is chosen.
+     * @param departureTime The simulation time (in hours) at which the courier departs onto the next path.
+     * @return A PathOutput containing the chosen path and its traversal time.
+     */
     public PathOutput pickNextPath(double departureTime) {
         double minimumTime = Double.MAX_VALUE;
         int minimumTimeIndex = 0;
@@ -49,19 +52,27 @@ public class Path {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Path path = (Path) o;
-        return Objects.equals(startingNode, path.startingNode) && Objects.equals(endingNode, path.endingNode);
+        return Objects.equals(startingNode, path.startingNode);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(startingNode, connectingPaths, pathEdges, endingNode);
+        return Objects.hash(startingNode, connectingPaths, pathEdges);
+    }
+
+    @Override
+    public String toString() {
+        return "Path{" +
+                "startingNode=" + startingNode +
+                ", connectingPaths=" + connectingPaths +
+                ", pathEdges=" + pathEdges +
+                '}';
     }
 
     public static class Builder {
         private final Node startingNode;
         private final List<Path> connectingPaths = new ArrayList<>();
         private final List<Edge<Node>> pathEdges = new ArrayList<>();
-        private Node endingNode;
 
         private Builder(Node startingNode) {
             this.startingNode = startingNode;
@@ -73,17 +84,32 @@ public class Path {
         }
 
         public Builder throughEdges(List<Edge<Node>> edges) {
+            // Validate that all edges start or end at the starting node
+            edges.forEach(edge -> {
+                if (!edge.from().equals(startingNode) && !edge.to().equals(startingNode)) {
+                    throw new IllegalArgumentException(
+                            "Edge " + edge + " does not start or end at the starting node " + startingNode
+                    );
+                }
+            });
+
             this.pathEdges.addAll(edges);
             return this;
         }
 
-        public Builder to(Node endingNode) {
-            this.endingNode = endingNode;
-            return this;
-        }
-
         public Path build() {
-            return new Path(startingNode, List.copyOf(connectingPaths), List.copyOf(pathEdges), endingNode);
+            // Validate that all edges start or end at the starting node of their corresponding path
+            for (int i = 0; i < connectingPaths.size(); i++) {
+                Path path = connectingPaths.get(i);
+                Edge<Node> edge = pathEdges.get(i);
+
+                if (!edge.from().equals(path.startingNode) && !edge.to().equals(path.startingNode)) {
+                    throw new IllegalStateException(
+                            "Edge " + edge + " does not start or end at the path starting node of " + path
+                    );
+                }
+            }
+            return new Path(startingNode, List.copyOf(connectingPaths), List.copyOf(pathEdges));
         }
     }
 }
