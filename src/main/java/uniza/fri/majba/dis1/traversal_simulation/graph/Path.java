@@ -98,6 +98,9 @@ public class Path {
         }
 
         public Path build() {
+            Objects.requireNonNull(connectingPaths);
+            Objects.requireNonNull(pathEdges);
+
             // Validate that all edges start or end at the starting node of their corresponding path
             for (int i = 0; i < connectingPaths.size(); i++) {
                 Path path = connectingPaths.get(i);
