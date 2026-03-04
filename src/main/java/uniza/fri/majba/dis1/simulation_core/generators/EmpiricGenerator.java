@@ -1,7 +1,5 @@
 package uniza.fri.majba.dis1.simulation_core.generators;
 
-import uniza.fri.majba.dis1.Config;
-
 import java.util.List;
 import java.util.Random;
 
@@ -18,10 +16,13 @@ public abstract class EmpiricGenerator extends Generator {
     public static final double DELTA = 1.0E-12;
     private final Random probabilityRandom;
     private final List<ProbabilityGeneratorPair> probabilityGeneratorPairs;
+    protected final Random seedGenerator;
 
 
-    protected EmpiricGenerator(List<EmpiricGeneratorConfiguration> configurations) {
-        this.probabilityRandom = new Random(Config.getSeedGenerator().nextInt());
+    // TODO posielat generator nasad do konstruktora
+    protected EmpiricGenerator(List<EmpiricGeneratorConfiguration> configurations, Random seedGenerator) {
+        this.probabilityRandom = new Random();
+        this.seedGenerator = seedGenerator;
 
         double sum = 0.0;
         List<ProbabilityGeneratorPair> pairs = new ArrayList<>();
@@ -44,7 +45,7 @@ public abstract class EmpiricGenerator extends Generator {
         }
 
         for (ProbabilityGeneratorPair pair : probabilityGeneratorPairs) {
-            if (probability <= pair.probability()) {
+            if (probability < pair.probability()) {
                 return pair.generator();
             }
         }
@@ -61,6 +62,10 @@ public abstract class EmpiricGenerator extends Generator {
         Generator pickedGenerator = this.selectGenerator(probability);
 
         return pickedGenerator.generate();
+    }
+
+    public Random getProbabilityRandom() {
+        return probabilityRandom;
     }
 
     private record ProbabilityGeneratorPair(double probability, Generator generator) { }

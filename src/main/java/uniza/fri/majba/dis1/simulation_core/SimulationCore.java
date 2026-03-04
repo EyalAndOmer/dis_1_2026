@@ -8,6 +8,7 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public abstract class SimulationCore {
     private final Replication replication;
+    // TODO odstranit, zatial nepotrebne
     private final ReentrantLock pauseLock = new ReentrantLock();
     private final Condition resumeCondition = pauseLock.newCondition();
     private volatile boolean paused = false;
