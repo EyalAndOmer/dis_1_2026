@@ -34,14 +34,6 @@ public enum Config {
         return properties.getProperty(key);
     }
 
-    public String getProperty(String key, String defaultValue) {
-        return properties.getProperty(key, defaultValue);
-    }
-
-    public Random getSeedGeneratorInstance() {
-        return seedGenerator;
-    }
-
     public static Random getSeedGenerator() {
         return INSTANCE.seedGenerator;
     }

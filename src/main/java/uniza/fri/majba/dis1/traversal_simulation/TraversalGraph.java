@@ -134,7 +134,7 @@ public final class TraversalGraph {
                 .nextPaths(List.of(terminalStrecno))
                 .throughEdges(List.of(zilinaStrecnoNorthToStrecno))
                 .build();
-        Path strecnoZilina_A = Path.from(zilinaStrecnoNorth)
+        Path strecnoZilinaA = Path.from(zilinaStrecnoNorth)
                 .nextPaths(List.of(terminalZilina))
                 .throughEdges(List.of(strecnoNorthZilinaEdge))
                 .build();
@@ -143,7 +143,7 @@ public final class TraversalGraph {
                 .nextPaths(List.of(terminalStrecno))
                 .throughEdges(List.of(zilinaStrecnoSouthToStrecno))
                 .build();
-        Path strecnoZilina_B = Path.from(zilinaStrecnoSouth)
+        Path strecnoZilinaB = Path.from(zilinaStrecnoSouth)
                 .nextPaths(List.of(terminalZilina))
                 .throughEdges(List.of(zilinaStrecnoSouthToZilina))
                 .build();
@@ -154,7 +154,7 @@ public final class TraversalGraph {
                 .build();
 
         Path pathStrecnoZilina = Path.from(strecno)
-                .nextPaths(List.of(strecnoZilina_A, strecnoZilina_B, kToZilina))
+                .nextPaths(List.of(strecnoZilinaA, strecnoZilinaB, kToZilina))
                 .throughEdges(List.of(strecnoToZilinaStrecnoNorth, strecnoToZilinaStrecnoSouth, strecnoK))
                 .build();
 
@@ -185,22 +185,22 @@ public final class TraversalGraph {
                 .nextPaths(List.of(terminalRT))
                 .throughEdges(List.of(rajeckeTepliceX1ToRajeckeTeplice))
                 .build();
-        Path divinkaRT_A_direct = Path.from(x3Divinka)
+        Path divinkaRtADirect = Path.from(x3Divinka)
                 .nextPaths(List.of(x1ToRT))
                 .throughEdges(List.of(x3DivinkaToRajeckeTepliceX1))
                 .build();
 
-        Path x1X2ToX1_path = Path.from(x1X2)
+        Path x1X2ToX1Path = Path.from(x1X2)
                 .nextPaths(List.of(x1ToRT))
                 .throughEdges(List.of(x1X2ToRajeckeTepliceX1))
                 .build();
-        Path divinkaRT_A_viaX1X2 = Path.from(x3Divinka)
-                .nextPaths(List.of(x1X2ToX1_path))
+        Path divinkaRtAViaX1X2 = Path.from(x3Divinka)
+                .nextPaths(List.of(x1X2ToX1Path))
                 .throughEdges(List.of(x1X2ToX3Divinka))
                 .build();
 
         Path pathDivinkaRT = Path.from(divinka)
-                .nextPaths(List.of(divinkaRT_A_direct, divinkaRT_A_viaX1X2, kToRT))
+                .nextPaths(List.of(divinkaRtADirect, divinkaRtAViaX1X2, kToRT))
                 .throughEdges(List.of(divinkaToX3Divinka, divinkaToX3Divinka, divinkaK))
                 .build();
 
@@ -214,38 +214,38 @@ public final class TraversalGraph {
                 .throughEdges(List.of(x1X2ToX3Divinka))
                 .build();
 
-        Path rtDivinka_A = Path.from(rajeckeTepliceX1)
+        Path rtDivinkaA = Path.from(rajeckeTepliceX1)
                 .nextPaths(List.of(x1X2ToX3, x3ToDivinka))
                 .throughEdges(List.of(rajeckeTepliceX1ToX1X2, rajeckeTepliceX1ToX3Divinka))
                 .build();
 
         Path pathRTDivinka = Path.from(rajeckeTeplice)
-                .nextPaths(List.of(rtDivinka_A, kToDivinka))
+                .nextPaths(List.of(rtDivinkaA, kToDivinka))
                 .throughEdges(List.of(rajeckeTepliceToRajeckeTepliceX1, rajeckeTepliceK))
                 .build();
 
         // Strečno - Rajecké Teplice
-        Path strecnoRT_junction = Path.from(strecnoRajeckeTeplice)
+        Path strecnoRtJunction = Path.from(strecnoRajeckeTeplice)
                 .nextPaths(List.of(terminalRT))
                 .throughEdges(List.of(strecnoRajeckeTepliceToRajeckeTeplice))
                 .build();
         Path pathStrecnoRT = Path.from(strecno)
-                .nextPaths(List.of(strecnoRT_junction, strecnoRT_junction, kToRT))
+                .nextPaths(List.of(strecnoRtJunction, strecnoRtJunction, kToRT))
                 .throughEdges(List.of(strecnoToStrecnoRajeckeTepliceBlue, strecnoToStrecnoRajeckeTepliceBlack, strecnoK))
                 .build();
 
-        Path rtStrecno_A = Path.from(strecnoRajeckeTeplice)
+        Path rtStrecnoA = Path.from(strecnoRajeckeTeplice)
                 .nextPaths(List.of(terminalStrecno))
                 .throughEdges(List.of(strecnoRajeckeTepliceToStrecnoBlue))
                 .build();
 
-        Path rtStrecno_B = Path.from(strecnoRajeckeTeplice)
+        Path rtStrecnoB = Path.from(strecnoRajeckeTeplice)
                 .nextPaths(List.of(terminalStrecno))
                 .throughEdges(List.of(strecnoRajeckeTepliceToStrecnoBlack))
                 .build();
 
         Path pathRTStrecno = Path.from(rajeckeTeplice)
-                .nextPaths(List.of(rtStrecno_A, rtStrecno_B, kToStrecno))
+                .nextPaths(List.of(rtStrecnoA, rtStrecnoB, kToStrecno))
                 .throughEdges(List.of(rajeckeTepliceToStrecnoRajeckeTeplice, rajeckeTepliceToStrecnoRajeckeTeplice, rajeckeTepliceK))
                 .build();
 
