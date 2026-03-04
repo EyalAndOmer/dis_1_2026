@@ -34,16 +34,16 @@ public final class TraversalGraph {
 
 
         // Edges
-        Edge<Node> zilinaK = new KEdge<>(zilina, k, EdgeColor.BLACK, 2, BLACK_EDGE_GENERATOR, K_GENERATOR);
+        Edge<Node> zilinaK = new Edge<>(zilina, k, EdgeColor.BLACK, 2, BLACK_EDGE_GENERATOR);
         Edge<Node> kZilina = new KEdge<>(k, zilina, EdgeColor.BLACK, 2, BLACK_EDGE_GENERATOR, K_GENERATOR);
 
-        Edge<Node> divinkaK = new KEdge<>(divinka, k, EdgeColor.RED, 2, RED_EDGE_GENERATOR, K_GENERATOR);
+        Edge<Node> divinkaK = new Edge<>(divinka, k, EdgeColor.RED, 2, RED_EDGE_GENERATOR);
         Edge<Node> kDivinka = new KEdge<>(k, divinka, EdgeColor.RED, 2, RED_EDGE_GENERATOR, K_GENERATOR);
 
-        Edge<Node> rajeckeTepliceK = new KEdge<>(rajeckeTeplice, k, EdgeColor.GREEN, 2, GREEN_EDGE_GENERATOR, K_GENERATOR);
+        Edge<Node> rajeckeTepliceK = new Edge<>(rajeckeTeplice, k, EdgeColor.GREEN, 2, GREEN_EDGE_GENERATOR);
         Edge<Node> kRajeckeTeplice = new KEdge<>(k, rajeckeTeplice, EdgeColor.GREEN, 2, GREEN_EDGE_GENERATOR, K_GENERATOR);
 
-        Edge<Node> strecnoK = new KEdge<>(strecno, k, EdgeColor.BLUE, 4, BLUE_EDGE_GENERATOR, K_GENERATOR);
+        Edge<Node> strecnoK = new Edge<>(strecno, k, EdgeColor.BLUE, 4, BLUE_EDGE_GENERATOR);
         Edge<Node> kStrecno = new KEdge<>(k, strecno, EdgeColor.BLUE, 4, BLUE_EDGE_GENERATOR, K_GENERATOR);
 
 
@@ -268,6 +268,7 @@ public final class TraversalGraph {
         // Žilina --> Rajecké Teplice --> Strečno --> Divinka --> Žilina
         List<Path> route6 = List.of(pathZilinaRT, pathRTStrecno, pathStrechnoDivinka, pathDivinkaZilina);
 
+        // TODO ak nebude fungovat, tak jedno monte carlo jadro pre kazdu zo 6 moznosti
         return List.of(route1, route2, route3, route4, route5, route6);
     }
 }

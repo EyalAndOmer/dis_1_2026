@@ -9,8 +9,8 @@ import uniza.fri.majba.dis1.simulation_core.generators.Generator;
  */
 public final class KEdge<V> extends Edge<V> {
 
-    /** 6 hours + 25 minutes expressed in hours */
-    private static final double K_SLOWDOWN_THRESHOLD = 6.0 + 25.0 / 60.0;
+    /** 6 hours + 30 minutes expressed in hours */
+    private static final double K_SLOWDOWN_THRESHOLD = 6.0 + 30.0 / 60.0;
 
     private final ContinuousUniformGenerator slowdownGenerator;
 
@@ -26,6 +26,7 @@ public final class KEdge<V> extends Edge<V> {
      */
     @Override
     public double getTraversalTime(double departureTime) {
+        // TODO spomalenie iba ked idem z bodu K
         double speed = generator().generate();
         if (departureTime > K_SLOWDOWN_THRESHOLD) {
             double slowdownPercentage = slowdownGenerator.generate();
