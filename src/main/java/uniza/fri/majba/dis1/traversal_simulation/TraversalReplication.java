@@ -51,15 +51,11 @@ public final class TraversalReplication implements Replication {
 
             for (Path path : route.path()) {
                 Path.PathOutput pathOutput = path.pickNextPath(currentPathTime);
-                Path previousPath = null;
                 currentPathTime += pathOutput.time();
 
+                // Traverse through the paths until we reach the end of the route (i.e., a path with no connecting paths).
                 while (!pathOutput.path().getConnectingPaths().isEmpty()) {
                     pathOutput = pathOutput.path().pickNextPath(currentPathTime);
-                    if (Objects.equals(previousPath, pathOutput.path())) {
-                        throw new IllegalStateException("Path output should not return the same path as the previous one.");
-                    }
-                    previousPath = pathOutput.path();
                     currentPathTime += pathOutput.time();
                 }
             }

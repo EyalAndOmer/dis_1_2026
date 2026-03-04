@@ -1,8 +1,5 @@
 package uniza.fri.majba.dis1.simulation_core.statistics;
 
-/**
- * Class representing a weighted sum statistic, which calculates the average of added values.
- */
 public final class WeightedSumStatistic implements Statistic {
     double totalSum;
     int totalCount;

@@ -5,7 +5,6 @@ import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Core class for running simulations with support for pausing and resuming.
- * It manages the lifecycle of replications and allows for controlled execution.
  */
 public abstract class SimulationCore {
     private final Replication replication;
@@ -57,7 +56,8 @@ public abstract class SimulationCore {
     }
 
     /**
-     * Pauses the simulation. The simulation will remain paused until resumeSimulation() is called.
+     * Pauses the simulation. The pause will take effect after the current replication finishes executing.
+     * The simulation will remain paused until resumeSimulation() is called.
      */
     public void pauseSimulation() {
         pauseLock.lock();
