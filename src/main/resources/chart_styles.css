@@ -725,3 +725,107 @@
     -fx-opacity: 0.5;
 }
 
+/* ---------- NAVIGATION BUTTON ---------- */
+.btn-nav {
+    -fx-background-color: rgba(59,130,246,0.15);
+    -fx-text-fill: #60a5fa;
+    -fx-border-color: rgba(59,130,246,0.3);
+    -fx-border-width: 1;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-font-weight: 700;
+    -fx-cursor: hand;
+}
+
+.btn-nav:hover {
+    -fx-background-color: rgba(59,130,246,0.25);
+    -fx-border-color: rgba(59,130,246,0.5);
+    -fx-text-fill: #93c5fd;
+}
+
+/* ---------- SECOND TASK RESULTS ---------- */
+.result-grid {
+    -fx-background-color: transparent;
+}
+
+.result-item {
+    -fx-background-color: rgba(255,255,255,0.04);
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: rgba(255,255,255,0.08);
+    -fx-border-width: 1;
+    -fx-padding: 14 18;
+}
+
+.result-item-success {
+    -fx-background-color: rgba(16,185,129,0.06);
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: rgba(16,185,129,0.2);
+    -fx-border-width: 1;
+    -fx-padding: 14 18;
+}
+
+.result-item-danger {
+    -fx-background-color: rgba(239,68,68,0.06);
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: rgba(239,68,68,0.2);
+    -fx-border-width: 1;
+    -fx-padding: 14 18;
+}
+
+.result-label {
+    -fx-text-fill: rgba(230,237,247,0.50);
+    -fx-font-size: 11px;
+    -fx-font-weight: 800;
+    -fx-letter-spacing: 0.6px;
+}
+
+.result-value {
+    -fx-text-fill: #e6edf7;
+    -fx-font-size: 16px;
+    -fx-font-weight: 700;
+}
+
+.result-value-large {
+    -fx-text-fill: #4da3ff;
+    -fx-font-size: 28px;
+    -fx-font-weight: 900;
+}
+
+/* ---------- CONFIG VIEW ---------- */
+.config-scroll {
+    -fx-background-color: #0b1118;
+    -fx-background: #0b1118;
+    -fx-border-color: transparent;
+}
+
+.config-scroll .viewport {
+    -fx-background-color: #0b1118;
+}
+
+.config-scroll .scroll-bar:vertical {
+    -fx-background-color: rgba(255,255,255,0.03);
+}
+
+.config-scroll .scroll-bar:vertical .thumb {
+    -fx-background-color: rgba(255,255,255,0.12);
+    -fx-background-radius: 4;
+}
+
+.config-scroll .scroll-bar:vertical .thumb:hover {
+    -fx-background-color: rgba(255,255,255,0.20);
+}
+
+.config-grid {
+    -fx-background-color: transparent;
+}
+
+.config-label {
+    -fx-text-fill: rgba(230,237,247,0.75);
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+    -fx-padding: 8 0;
+}
+

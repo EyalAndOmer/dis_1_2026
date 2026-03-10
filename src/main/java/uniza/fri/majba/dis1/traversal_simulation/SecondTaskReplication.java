@@ -2,28 +2,49 @@ package uniza.fri.majba.dis1.traversal_simulation;
 
 import uniza.fri.majba.dis1.simulation_core.Replication;
 import uniza.fri.majba.dis1.traversal_simulation.graph.Path;
+import uniza.fri.majba.dis1.ui.model.SimulationConfig;
+
+import java.util.function.Consumer;
 
 public class SecondTaskReplication implements Replication {
 
-    private static final int MONTE_CARLO_SAMPLES = 100_000;
-
-    private static final double EARLIEST_DEPARTURE = 6.0;
-    private static final double MUST_ARRIVE_BY = 7 + 35.0 / 60;
-    private static final double REQUIRED_ON_TIME_PERCENTAGE = 0.80;
-    private static final double INITIAL_STEP = 2.0;              // 1 hour
-    private static final double PRECISION = 1.0 / 3600;          // 1 second
+    private int monteCarloSamples;
+    private double earliestDeparture;
+    private double mustArriveBy;
+    private double requiredOnTimePercentage;
+    private double initialStep;
+    private double precision;
 
     private RouteParameters selectedRoute;
+    private int selectedRouteIndex = 3;
 
     /** On-time percentage at the last accepted departure time (from the search). */
     private double lastAcceptedOnTimePercentage;
     /** On-time percentage at the first rejected candidate (departure + 1 step that failed). */
     private double lastRejectedOnTimePercentage;
 
+    /** Callback to publish the result to the UI. */
+    private Consumer<SecondTaskResult> onResultReady;
+
+    public void setSelectedRouteIndex(int index) {
+        this.selectedRouteIndex = index;
+    }
+
+    public void setOnResultReady(Consumer<SecondTaskResult> onResultReady) {
+        this.onResultReady = onResultReady;
+    }
+
     @Override
     public void beforeAllReplications() {
-        // TODO refactor - combo box from view
-        this.selectedRoute = TraversalGraph.buildRoutes().get(3);
+        SimulationConfig cfg = SimulationConfig.getInstance();
+        this.monteCarloSamples = cfg.getMonteCarloSamples();
+        this.earliestDeparture = cfg.getEarliestDeparture();
+        this.mustArriveBy = cfg.getMustArriveBy();
+        this.requiredOnTimePercentage = cfg.getRequiredOnTimePercentage();
+        this.initialStep = cfg.getInitialStep();
+        this.precision = cfg.getPrecision();
+
+        this.selectedRoute = TraversalGraph.buildRoutes().get(selectedRouteIndex);
     }
 
     @Override
@@ -41,22 +62,34 @@ public class SecondTaskReplication implements Replication {
     @Override
     public void execute() {
         double latestDeparture = findLatestDepartureTime();
-        double oneSecondLater = latestDeparture + PRECISION;
+        double oneSecondLater = latestDeparture + precision;
 
         System.out.printf("Latest departure time for %.0f%% on-time arrival by %s: %s%n",
-                REQUIRED_ON_TIME_PERCENTAGE * 100,
-                formatTime(MUST_ARRIVE_BY),
+                requiredOnTimePercentage * 100,
+                formatTime(mustArriveBy),
                 formatTime(latestDeparture));
 
         System.out.printf("  On-time at %s: %.4f%% (>= %.0f%% ✓)%n",
                 formatTime(latestDeparture),
                 lastAcceptedOnTimePercentage * 100,
-                REQUIRED_ON_TIME_PERCENTAGE * 100);
+                requiredOnTimePercentage * 100);
 
         System.out.printf("  On-time at %s (+1s): %.4f%% (< %.0f%% ✗)%n",
                 formatTime(oneSecondLater),
                 lastRejectedOnTimePercentage * 100,
-                REQUIRED_ON_TIME_PERCENTAGE * 100);
+                requiredOnTimePercentage * 100);
+
+        if (onResultReady != null) {
+            onResultReady.accept(new SecondTaskResult(
+                    selectedRoute.routeName(),
+                    formatTime(latestDeparture),
+                    formatTime(mustArriveBy),
+                    lastAcceptedOnTimePercentage,
+                    lastRejectedOnTimePercentage,
+                    formatTime(oneSecondLater),
+                    requiredOnTimePercentage
+            ));
+        }
     }
 
     /**
@@ -75,16 +108,16 @@ public class SecondTaskReplication implements Replication {
      * holds the percentage at the first departure time that was rejected (1 step later).
      */
     private double findLatestDepartureTime() {
-        double departureTime = EARLIEST_DEPARTURE;
-        double step = INITIAL_STEP;
+        double departureTime = earliestDeparture;
+        double step = initialStep;
 
         lastAcceptedOnTimePercentage = estimateOnTimePercentage(departureTime);
 
-        while (step >= PRECISION) {
+        while (step >= precision) {
             double candidate = departureTime + step;
             double onTimePercentage = estimateOnTimePercentage(candidate);
 
-            if (onTimePercentage >= REQUIRED_ON_TIME_PERCENTAGE) {
+            if (onTimePercentage >= requiredOnTimePercentage) {
                 departureTime = candidate;
                 lastAcceptedOnTimePercentage = onTimePercentage;
             } else {
@@ -104,19 +137,19 @@ public class SecondTaskReplication implements Replication {
     private double estimateOnTimePercentage(double departureTime) {
         int onTimeCount = 0;
 
-        for (int i = 0; i < MONTE_CARLO_SAMPLES; i++) {
+        for (int i = 0; i < monteCarloSamples; i++) {
             double currentTime = departureTime;
 
             for (Path path : selectedRoute.path()) {
                 currentTime += path.calculateBestCompleteTotalTime(currentTime);
             }
 
-            if (currentTime < MUST_ARRIVE_BY) {
+            if (currentTime < mustArriveBy) {
                 onTimeCount++;
             }
         }
 
-        return (double) onTimeCount / MONTE_CARLO_SAMPLES;
+        return (double) onTimeCount / monteCarloSamples;
     }
 
     private static String formatTime(double hours) {

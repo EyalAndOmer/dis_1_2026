@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<StackPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="uniza.fri.majba.dis1.ui.controller.SecondTaskController"
+           styleClass="app-root">
+
+    <VBox spacing="0" prefWidth="1200" prefHeight="760">
+
+        <!-- TOP BAR -->
+        <HBox styleClass="topbar" alignment="CENTER_LEFT" spacing="16">
+            <padding>
+                <Insets top="14" right="18" bottom="14" left="18"/>
+            </padding>
+
+            <!-- Left: back button + title -->
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Button fx:id="backButton" styleClass="btn btn-secondary btn-toolbar" onAction="#onBackToFirstTask">
+                    <graphic>
+                        <FontIcon iconLiteral="fa-arrow-left" iconSize="14"/>
+                    </graphic>
+                </Button>
+                <FontIcon iconLiteral="fa-clock-o" iconSize="20" styleClass="app-icon"/>
+                <Label text="Úloha 2 – Najneskorší odchod" styleClass="app-title"/>
+            </HBox>
+
+            <Separator orientation="VERTICAL" styleClass="toolbar-separator"/>
+
+            <!-- Controls -->
+            <HBox spacing="12" alignment="CENTER_LEFT">
+                <Label text="Trasa:" styleClass="toolbar-label"/>
+                <ComboBox fx:id="routeComboBox" styleClass="combo-input" prefWidth="420"/>
+
+                <Button fx:id="startButton" text="Simulovať" styleClass="btn btn-primary btn-toolbar" onAction="#onStartSimulation">
+                    <graphic>
+                        <FontIcon iconLiteral="fa-play" iconSize="12"/>
+                    </graphic>
+                </Button>
+            </HBox>
+
+            <Region HBox.hgrow="ALWAYS"/>
+
+            <!-- Config button -->
+            <Separator orientation="VERTICAL" styleClass="toolbar-separator"/>
+            <Button fx:id="configButton" styleClass="btn btn-nav btn-toolbar" onAction="#onGoToConfig">
+                <graphic>
+                    <FontIcon iconLiteral="fa-cog" iconSize="14"/>
+                </graphic>
+            </Button>
+        </HBox>
+
+        <!-- BODY -->
+        <VBox styleClass="body-content" VBox.vgrow="ALWAYS">
+            <VBox styleClass="content" spacing="18" VBox.vgrow="ALWAYS">
+                <padding>
+                    <Insets top="24" right="24" bottom="20" left="24"/>
+                </padding>
+
+                <!-- Header -->
+                <VBox spacing="6">
+                    <Label text="Analýza najneskoršieho odchodu" styleClass="page-title"/>
+                    <Label text="Kedy najneskôr odísť, aby ste v 80 % prípadov stihli prísť do 7:35?"
+                           styleClass="page-subtitle"/>
+                </VBox>
+
+                <!-- Status / Progress -->
+                <HBox spacing="12" alignment="CENTER_LEFT">
+                    <VBox styleClass="kpi-card" spacing="4">
+                        <HBox spacing="6" alignment="CENTER_LEFT">
+                            <FontIcon iconLiteral="fa-info-circle" iconSize="12"/>
+                            <Label text="STAV" styleClass="kpi-label"/>
+                        </HBox>
+                        <Label fx:id="statusLabel" text="Čaká na spustenie" styleClass="kpi-value"
+                               style="-fx-font-size: 14px;"/>
+                    </VBox>
+                </HBox>
+
+                <!-- Results card -->
+                <VBox fx:id="resultsCard" styleClass="card" spacing="18" visible="false" managed="false"
+                      VBox.vgrow="ALWAYS">
+                    <padding>
+                        <Insets top="22" right="22" bottom="22" left="22"/>
+                    </padding>
+
+                    <Label text="Výsledky" styleClass="card-title"/>
+
+                    <!-- Result grid -->
+                    <GridPane hgap="24" vgap="16" styleClass="result-grid">
+                        <padding>
+                            <Insets top="8" right="0" bottom="8" left="0"/>
+                        </padding>
+                        <columnConstraints>
+                            <ColumnConstraints percentWidth="50" hgrow="ALWAYS"/>
+                            <ColumnConstraints percentWidth="50" hgrow="ALWAYS"/>
+                        </columnConstraints>
+
+                        <!-- Row 0: Route name -->
+                        <VBox styleClass="result-item" spacing="4" GridPane.columnIndex="0" GridPane.rowIndex="0"
+                              GridPane.columnSpan="2">
+                            <Label text="TRASA" styleClass="result-label"/>
+                            <Label fx:id="resultRouteName" text="—" styleClass="result-value"/>
+                        </VBox>
+
+                        <!-- Row 1: Latest departure | Must arrive by -->
+                        <VBox styleClass="result-item" spacing="4" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                            <Label text="NAJNESKORŠÍ ODCHOD" styleClass="result-label"/>
+                            <Label fx:id="resultDepartureTime" text="—" styleClass="result-value-large"/>
+                        </VBox>
+                        <VBox styleClass="result-item" spacing="4" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                            <Label text="MUSÍ BYŤ V CIELI DO" styleClass="result-label"/>
+                            <Label fx:id="resultArrivalDeadline" text="—" styleClass="result-value-large"/>
+                        </VBox>
+
+                        <!-- Row 2: On-time percentages -->
+                        <VBox styleClass="result-item-success" spacing="4" GridPane.columnIndex="0"
+                              GridPane.rowIndex="2">
+                            <Label text="VČASNOSŤ (PRIJATÝ)" styleClass="result-label"/>
+                            <HBox spacing="6" alignment="CENTER_LEFT">
+                                <FontIcon iconLiteral="fa-check-circle" iconSize="14"
+                                          style="-fx-text-fill: #34d399;"/>
+                                <Label fx:id="resultAcceptedPct" text="—" styleClass="result-value"
+                                       style="-fx-text-fill: #34d399;"/>
+                            </HBox>
+                        </VBox>
+                        <VBox styleClass="result-item-danger" spacing="4" GridPane.columnIndex="1"
+                              GridPane.rowIndex="2">
+                            <Label text="VČASNOSŤ (+1s, ZAMIETNUTÝ)" styleClass="result-label"/>
+                            <HBox spacing="6" alignment="CENTER_LEFT">
+                                <FontIcon iconLiteral="fa-times-circle" iconSize="14"
+                                          style="-fx-text-fill: #f87171;"/>
+                                <Label fx:id="resultRejectedPct" text="—" styleClass="result-value"
+                                       style="-fx-text-fill: #f87171;"/>
+                            </HBox>
+                        </VBox>
+
+                        <!-- Row 3: Required percentage -->
+                        <VBox styleClass="result-item" spacing="4" GridPane.columnIndex="0" GridPane.rowIndex="3">
+                            <Label text="POŽADOVANÁ VČASNOSŤ" styleClass="result-label"/>
+                            <Label fx:id="resultRequiredPct" text="—" styleClass="result-value"/>
+                        </VBox>
+                        <VBox styleClass="result-item" spacing="4" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                            <Label text="ODCHOD +1s (ZAMIETNUTÝ)" styleClass="result-label"/>
+                            <Label fx:id="resultRejectedTime" text="—" styleClass="result-value"/>
+                        </VBox>
+                    </GridPane>
+                </VBox>
+            </VBox>
+        </VBox>
+    </VBox>
+</StackPane>
+

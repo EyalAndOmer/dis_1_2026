@@ -28,11 +28,6 @@
 
             <!-- Controls -->
             <HBox spacing="12" alignment="CENTER_LEFT">
-                <Label text="Iterácie:" styleClass="toolbar-label"/>
-                <TextField text="10000" styleClass="toolbar-input" prefWidth="100"/>
-
-                <Label text="Seed:" styleClass="toolbar-label"/>
-                <TextField text="50" styleClass="toolbar-input" prefWidth="100"/>
 
                 <Button fx:id="startButton" text="Spustiť" styleClass="btn btn-primary btn-toolbar" onAction="#onStartSimulation">
                     <graphic>
@@ -44,10 +39,28 @@
                         <FontIcon iconLiteral="fa-stop" iconSize="12"/>
                     </graphic>
                 </Button>
+                <Button fx:id="resumeButton" text="Pokračovať" styleClass="btn btn-secondary btn-toolbar" onAction="#onResumeSimulation">
+                    <graphic>
+                        <FontIcon iconLiteral="fa-forward" iconSize="12"/>
+                    </graphic>
+                </Button>
 
             </HBox>
 
             <Region HBox.hgrow="ALWAYS"/>
+
+            <!-- Navigation to Task 2 -->
+            <Separator orientation="VERTICAL" styleClass="toolbar-separator"/>
+            <Button fx:id="task2Button" text="Úloha 2" styleClass="btn btn-nav btn-toolbar" onAction="#onGoToSecondTask">
+                <graphic>
+                    <FontIcon iconLiteral="fa-clock-o" iconSize="12"/>
+                </graphic>
+            </Button>
+            <Button fx:id="configButton" styleClass="btn btn-nav btn-toolbar" onAction="#onGoToConfig">
+                <graphic>
+                    <FontIcon iconLiteral="fa-cog" iconSize="14"/>
+                </graphic>
+            </Button>
         </HBox>
 
         <!-- BODY -->
@@ -89,7 +102,7 @@
                         <Insets top="18" right="18" bottom="14" left="18"/>
                     </padding>
 
-                    <!-- Charts grid display area (1x2 grid) -->
+                    <!-- Charts grid — all 6 wrappers live here permanently; pagination toggles visibility -->
                     <GridPane fx:id="chartsGrid" hgap="16" vgap="16" VBox.vgrow="ALWAYS" styleClass="charts-grid">
                         <padding>
                             <Insets top="10" right="0" bottom="10" left="0"/>
@@ -98,9 +111,6 @@
                             <ColumnConstraints percentWidth="50" hgrow="ALWAYS"/>
                             <ColumnConstraints percentWidth="50" hgrow="ALWAYS"/>
                         </columnConstraints>
-                        <rowConstraints>
-                            <RowConstraints percentHeight="100" vgrow="ALWAYS"/>
-                        </rowConstraints>
                     </GridPane>
 
                     <!-- Pagination -->
