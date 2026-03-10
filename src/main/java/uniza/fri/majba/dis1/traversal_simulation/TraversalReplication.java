@@ -1,16 +1,16 @@
 package uniza.fri.majba.dis1.traversal_simulation;
 
-import uniza.fri.majba.dis1.simulation_core.Replication;
 import uniza.fri.majba.dis1.traversal_simulation.graph.Path;
+import uniza.fri.majba.dis1.ui.CallbackReplication;
+import uniza.fri.majba.dis1.ui.callback.ReplicationCallback;
 
-import java.time.Duration;
-import java.time.Instant;
 import java.util.List;
 
-public final class TraversalReplication implements Replication {
+public final class TraversalReplication implements CallbackReplication {
     private List<RouteParameters> routes;
     // Start at 6:00 at the morning
     public final double SIMULATION_START_TIME = 6.00;
+    private ReplicationCallback callback;
 
     // Uloha 2 - v 80% pripadoch chce byt v Ziline uz 7:35. Kedy, v akom case, ma zacat obsluhovat ?
     // Replikacie - zaciatok o 6:00, zbehni, zisti kolko trvalo 80% hodnot (sort, zober 80%). ODcitaj tu hodnotu od 7:35 a ides znova
@@ -55,6 +55,7 @@ public final class TraversalReplication implements Replication {
 
     @Override
     public void afterReplication() {
+        this.callback.onReplicationComplete(routes.get(1).weightedSumStatistic().calculateStatistic());
     }
 
     @Override
@@ -71,5 +72,9 @@ public final class TraversalReplication implements Replication {
 
             route.weightedSumStatistic().addValue(currentPathTime);
         }
+    }
+
+    public void setCallback(ReplicationCallback callback) {
+        this.callback = callback;
     }
 }

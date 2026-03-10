@@ -1,28 +1,18 @@
 package uniza.fri.majba.dis1.ui.controller;
 
-import io.fair_acc.chartfx.XYChart;
-import javafx.collections.FXCollections;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import uniza.fri.majba.dis1.ui.model.SimulationModel;
-import uniza.fri.majba.dis1.ui.model.SimulationModel.RouteRow;
+import uniza.fri.majba.dis1.simulation_core.SimulationCore;
+import uniza.fri.majba.dis1.traversal_simulation.MonteCarloSimulationCore;
+import uniza.fri.majba.dis1.traversal_simulation.TraversalReplication;
+import uniza.fri.majba.dis1.ui.CallbackReplication;
+import uniza.fri.majba.dis1.ui.callback.ReplicationCallback;
 
-import java.io.IOException;
-import java.util.List;
+public final class SimulationController implements ReplicationCallback {
 
-public class SimulationController {
-
-    @FXML private TableView<RouteRow> routesTable;
-    @FXML private TableColumn<RouteRow, Number> colRank;
-    @FXML private TableColumn<RouteRow, String> colSequence;
-    @FXML private TableColumn<RouteRow, String> colAvg;
     @FXML private Pagination pagination;
     @FXML private VBox contentPanel;
     @FXML private Button startButton;
@@ -32,59 +22,59 @@ public class SimulationController {
     @FXML private VBox chartsContainer;
     @FXML private GridPane chartsGrid;
 
-    private SimulationModel model;
+    private static final int DEFAULT_REPLICATIONS = 100_000;
+
+    private SimulationCore simulationCore;
+    private CallbackReplication replication;
+    private Thread simulationThread;
 
     @FXML
-    private void initialize() {
-        model = new SimulationModel();
-
-        routesTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        colRank.setCellValueFactory(c -> c.getValue().rankProperty());
-        colSequence.setCellValueFactory(c -> c.getValue().sequenceProperty());
-        colAvg.setCellValueFactory(c -> c.getValue().avgProperty());
-    }
-
-    private void configurePaginationForTab(int tabIndex) {
-        if (tabIndex == 0) {
-            pagination.setPageCount(model.getTablePageCount());
-            pagination.setCurrentPageIndex(0);
-            updateTablePage(0);
-        } else if (tabIndex == 1) {
-            pagination.setPageCount(model.getChartPageCount());
-            pagination.setCurrentPageIndex(0);
-            updateChartsPage(0);
-        }
-    }
-
-    private void updateCurrentTabContent(int pageIndex) {
-        int currentTab = tabPane.getSelectionModel().getSelectedIndex();
-        if (currentTab == 0) {
-            updateTablePage(pageIndex);
-        } else if (currentTab == 1) {
-            updateChartsPage(pageIndex);
-        }
-    }
-
-    private void updateTablePage(int pageIndex) {
-        routesTable.setItems(FXCollections.observableArrayList(model.getRoutesPage(pageIndex)));
+    void initialize() {
+        this.replication = new TraversalReplication();
+        this.simulationCore = new MonteCarloSimulationCore(replication);
+        replication.setCallback(this);
     }
 
     @FXML
-    private void onStartSimulation() {
+    void onStartSimulation() {
+        if (simulationThread != null && simulationThread.isAlive()) {
+            simulationThread.interrupt();
+        }
+
         contentPanel.setVisible(true);
         contentPanel.setManaged(true);
 
-        pagination.currentPageIndexProperty().addListener((obs, oldIndex, newIndex) ->
-                updateCurrentTabContent(newIndex.intValue()));
+        Task<Void> task = new Task<>() {
+            @Override
+            protected Void call() {
+                simulationCore.simulate(DEFAULT_REPLICATIONS);
+                return null;
+            }
+        };
 
-        tabPane.getSelectionModel().selectedIndexProperty().addListener((obs, oldTab, newTab) ->
-                configurePaginationForTab(newTab.intValue()));
+        task.setOnFailed(event -> {
+            Throwable exception = task.getException();
+            if (exception != null) {
+                exception.printStackTrace();
+                System.exit(1);
+            }
+        });
 
-        configurePaginationForTab(0);
+        task.setOnSucceeded(event -> {
+            System.out.println("DONE");
+        });
+
+        simulationThread = new Thread(task);
+        simulationThread.setDaemon(true);
+        simulationThread.setName("simulation-thread");
+        simulationThread.start();
     }
 
     @FXML
     private void onStopSimulation() {
+        if (simulationThread != null && simulationThread.isAlive()) {
+            simulationThread.interrupt();
+        }
         contentPanel.setVisible(false);
         contentPanel.setManaged(false);
     }
@@ -97,25 +87,8 @@ public class SimulationController {
         alert.showAndWait();
     }
 
-    private void updateChartsPage(int pageIndex) {
-        List<XYChart> pageCharts = model.getChartsPage(pageIndex);
-        chartsGrid.getChildren().clear();
-
-        for (int i = 0; i < pageCharts.size(); i++) {
-            int row = i / 2;
-            int col = i % 2;
-            XYChart chart = pageCharts.get(i);
-
-            StackPane chartContainer = new StackPane(chart);
-            chartContainer.setStyle(
-                    "-fx-background-color: rgba(255,255,255,0.02);" +
-                    "-fx-background-radius: 12;" +
-                    "-fx-border-color: rgba(255,255,255,0.06);" +
-                    "-fx-border-radius: 12;" +
-                    "-fx-border-width: 1;" +
-                    "-fx-padding: 10;"
-            );
-            chartsGrid.add(chartContainer, col, row);
-        }
+    @Override
+    public void onReplicationComplete(double result) {
+        System.out.println(result);
     }
 }

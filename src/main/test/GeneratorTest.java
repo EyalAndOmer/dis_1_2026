@@ -6,8 +6,11 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
+import java.util.Random;
 
 public class GeneratorTest {
+    Random seedGenerator = new Random(12345);
+
     List<EmpiricGeneratorConfiguration> continuousEmpiricGeneratorConfiguration = List.of(
             new EmpiricGeneratorConfiguration(10, 20, 0.1),
             new EmpiricGeneratorConfiguration(20, 32, 0.5),
@@ -16,15 +19,16 @@ public class GeneratorTest {
             new EmpiricGeneratorConfiguration(75, 85, 0.05)
     );
 
-    ContinuousEmpiricGenerator continuousEmpiricGenerator = new ContinuousEmpiricGenerator(continuousEmpiricGeneratorConfiguration);
+    ContinuousEmpiricGenerator continuousEmpiricGenerator = new ContinuousEmpiricGenerator(continuousEmpiricGeneratorConfiguration, seedGenerator);
 
     List<EmpiricGeneratorConfiguration> discreteEmpiricGeneratorConfiguration = List.of(
             new EmpiricGeneratorConfiguration(15, 28, 0.2),
             new EmpiricGeneratorConfiguration(29, 44, 0.4),
             new EmpiricGeneratorConfiguration(45, 65, 0.4)
-    );
+    );    Random seedGenerator = new Random(12345);
 
-    DiscreteEmpiricGenerator discreteEmpiricGenerator = new DiscreteEmpiricGenerator(discreteEmpiricGeneratorConfiguration);
+
+    DiscreteEmpiricGenerator discreteEmpiricGenerator = new DiscreteEmpiricGenerator(discreteEmpiricGeneratorConfiguration, seedGenerator);
 
     void discreteEmpiricGeneratorTest() {
         String fileName = "discrete_empiric_generator_output.csv";
