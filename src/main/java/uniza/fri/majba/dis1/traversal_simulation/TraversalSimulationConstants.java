@@ -24,7 +24,7 @@ public final class TraversalSimulationConstants {
     public static final List<EmpiricGeneratorConfiguration> BLUE_EDGE_GENERATOR_CONFIGURATION = List.of(
             new EmpiricGeneratorConfiguration(15, 28, 0.2),
             new EmpiricGeneratorConfiguration(29, 44, 0.4),
-            new EmpiricGeneratorConfiguration(45, 65, 0.4)
+            new EmpiricGeneratorConfiguration(45, 64, 0.4)
     );
     public static final DiscreteEmpiricGenerator BLUE_EDGE_GENERATOR = new DiscreteEmpiricGenerator(BLUE_EDGE_GENERATOR_CONFIGURATION, seedGenerator);
 

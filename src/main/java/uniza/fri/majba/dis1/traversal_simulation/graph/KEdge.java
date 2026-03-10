@@ -30,7 +30,7 @@ public final class KEdge<V> extends Edge<V> {
         double speed = generator().generate();
         if (departureTime > K_SLOWDOWN_THRESHOLD) {
             double slowdownPercentage = slowdownGenerator.generate();
-            speed = speed * (100.0 - slowdownPercentage) / 100.0;
+            speed = speed * ((100.0 - slowdownPercentage) / 100.0);
         }
         return weight() / speed;
     }

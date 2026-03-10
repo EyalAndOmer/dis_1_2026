@@ -1,5 +1,6 @@
 package uniza.fri.majba.dis1.traversal_simulation.graph;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -37,13 +38,46 @@ public class Path {
             }
         }
 
-        System.out.println(pathEdges.get(minimumTimeIndex));
-
         return new PathOutput(minimumTime, connectingPaths.get(minimumTimeIndex));
     }
 
     public List<Path> getConnectingPaths() {
         return connectingPaths;
+    }
+
+    public Node getStartingNode() {
+        return startingNode;
+    }
+
+    /**
+     * Recursively calculates the total traversal time for all possible complete routes from this path
+     * to a terminal node, and returns the minimum total time found.
+     * <p>
+     * Unlike {@link #pickNextPath(double)}, which only compares the first edge,
+     * this method evaluates the entire path from the current node to the destination city.
+     *
+     * @param departureTime The simulation time (in hours) at which the courier departs from this node.
+     * @return The minimum total traversal time (in hours) across all possible complete routes to the terminal.
+     */
+    public double calculateBestCompleteTotalTime(double departureTime) {
+        if (connectingPaths.isEmpty()) {
+            // Terminal node — no more edges to traverse
+            return 0.0;
+        }
+
+        double bestTotalTime = Double.MAX_VALUE;
+
+        for (int i = 0; i < connectingPaths.size(); i++) {
+            double edgeTime = pathEdges.get(i).getTraversalTime(departureTime);
+            double remainingTime = connectingPaths.get(i).calculateBestCompleteTotalTime(departureTime + edgeTime);
+            double totalTime = edgeTime + remainingTime;
+
+            if (totalTime < bestTotalTime) {
+                bestTotalTime = totalTime;
+            }
+        }
+
+        return bestTotalTime;
     }
 
     public record PathOutput(double time, Path path) {}

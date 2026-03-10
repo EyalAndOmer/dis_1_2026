@@ -1,5 +1,6 @@
 package uniza.fri.majba.dis1.traversal_simulation;
 
+import uniza.fri.majba.dis1.simulation_core.statistics.WeightedSumStatistic;
 import uniza.fri.majba.dis1.traversal_simulation.graph.Edge;
 import uniza.fri.majba.dis1.traversal_simulation.graph.EdgeColor;
 import uniza.fri.majba.dis1.traversal_simulation.graph.KEdge;
@@ -17,7 +18,7 @@ public final class TraversalGraph {
         // utility class
     }
 
-    public static List<List<Path>> buildRoutes() {
+    public static List<RouteParameters> buildRoutes() {
         // Nodes
         Node zilina = new Node("Žilina", NodeType.CITY);
         Node divinka = new Node("Divinka", NodeType.CITY);
@@ -269,7 +270,14 @@ public final class TraversalGraph {
         List<Path> route6 = List.of(pathZilinaRT, pathRTStrecno, pathStrechnoDivinka, pathDivinkaZilina);
 
         // TODO ak nebude fungovat, tak jedno monte carlo jadro pre kazdu zo 6 moznosti
-        return List.of(route1, route2, route3, route4, route5, route6);
+        return List.of(
+                new RouteParameters(route1, new WeightedSumStatistic(), "Žilina --> Divinka --> Strečno --> Rajecké Teplice --> Žilina"),
+                new RouteParameters(route2, new WeightedSumStatistic(), "Žilina --> Divinka --> Rajecké Teplice --> Strečno --> Žilina"),
+                new RouteParameters(route3, new WeightedSumStatistic(), "Žilina --> Strečno --> Divinka --> Rajecké Teplice --> Žilina"),
+                new RouteParameters(route4, new WeightedSumStatistic(), "Žilina --> Strečno --> Rajecké Teplice --> Divinka --> Žilina"),
+                new RouteParameters(route5, new WeightedSumStatistic(), "Žilina --> Rajecké Teplice --> Divinka --> Strečno --> Žilina"),
+                new RouteParameters(route6, new WeightedSumStatistic(), "Žilina --> Rajecké Teplice --> Strečno --> Divinka --> Žilina")
+        );
     }
 }
 
