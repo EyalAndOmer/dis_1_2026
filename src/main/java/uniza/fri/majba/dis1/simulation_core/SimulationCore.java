@@ -1,6 +1,7 @@
 package uniza.fri.majba.dis1.simulation_core;
 
 import java.util.concurrent.atomic.AtomicBoolean;
+
 /**
  * Core class for running simulations with support for pausing and resuming.
  */
@@ -12,6 +13,7 @@ public abstract class SimulationCore {
     protected SimulationCore(Replication replication) {
         this.replication = replication;
     }
+
 
     /**
      * Runs the simulation for a specified number of replications.
@@ -43,6 +45,7 @@ public abstract class SimulationCore {
 
         this.replication.afterAllReplications();
     }
+
 
     /**
      * Pauses the simulation. The pause will take effect after the current replication finishes executing.

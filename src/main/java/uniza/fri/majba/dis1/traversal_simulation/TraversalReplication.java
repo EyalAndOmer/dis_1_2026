@@ -1,16 +1,16 @@
 package uniza.fri.majba.dis1.traversal_simulation;
 
+import uniza.fri.majba.dis1.simulation_core.Replication;
 import uniza.fri.majba.dis1.traversal_simulation.graph.Path;
-import uniza.fri.majba.dis1.ui.CallbackReplication;
-import uniza.fri.majba.dis1.ui.callback.ReplicationCallback;
 
 import java.util.List;
+import java.util.function.Consumer;
 
-public final class TraversalReplication implements CallbackReplication {
+public final class TraversalReplication implements Replication {
     private List<RouteParameters> routes;
     // Start at 6:00 at the morning
     public final double SIMULATION_START_TIME = 6.00;
-    private ReplicationCallback callback;
+    private Consumer<ReplicationResult> onAfterReplication;
 
     // Uloha 2 - v 80% pripadoch chce byt v Ziline uz 7:35. Kedy, v akom case, ma zacat obsluhovat ?
     // Replikacie - zaciatok o 6:00, zbehni, zisti kolko trvalo 80% hodnot (sort, zober 80%). ODcitaj tu hodnotu od 7:35 a ides znova
@@ -55,7 +55,18 @@ public final class TraversalReplication implements CallbackReplication {
 
     @Override
     public void afterReplication() {
-        this.callback.onReplicationComplete(routes.get(1).weightedSumStatistic().calculateStatistic());
+        if (onAfterReplication != null) {
+            List<ReplicationResult.RouteResult> routeResults = routes.stream()
+                    .map(r -> new ReplicationResult.RouteResult(
+                            r.routeName(),
+                            r.weightedSumStatistic().calculateStatistic()))
+                    .toList();
+            onAfterReplication.accept(new ReplicationResult(routeResults));
+        }
+    }
+
+    public void setOnAfterReplication(Consumer<ReplicationResult> onAfterReplication) {
+        this.onAfterReplication = onAfterReplication;
     }
 
     @Override
@@ -72,9 +83,5 @@ public final class TraversalReplication implements CallbackReplication {
 
             route.weightedSumStatistic().addValue(currentPathTime);
         }
-    }
-
-    public void setCallback(ReplicationCallback callback) {
-        this.callback = callback;
     }
 }

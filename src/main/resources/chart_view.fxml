@@ -71,77 +71,39 @@
                                 <FontIcon iconLiteral="fa-refresh" iconSize="12"/>
                                 <Label text="ITERÁCIE" styleClass="kpi-label"/>
                             </HBox>
-                            <Label text="10,000" styleClass="kpi-value"/>
+                            <Label fx:id="kpiIterationsValue" text="0" styleClass="kpi-value"/>
                         </VBox>
                         <VBox styleClass="kpi-card" spacing="4">
                             <HBox spacing="6" alignment="CENTER_LEFT">
                                 <FontIcon iconLiteral="fa-clock-o" iconSize="12"/>
                                 <Label text="TRVANIE" styleClass="kpi-label"/>
                             </HBox>
-                            <Label text="1.2s" styleClass="kpi-value"/>
+                            <Label fx:id="kpiDurationValue" text="0.0s" styleClass="kpi-value"/>
                         </VBox>
                     </HBox>
                 </HBox>
 
-                <!-- Results card with Tabs -->
+                <!-- Results card with Charts -->
                 <VBox styleClass="card" spacing="14" VBox.vgrow="ALWAYS">
                     <padding>
                         <Insets top="18" right="18" bottom="14" left="18"/>
                     </padding>
 
-                    <!-- Tab Navigation -->
-                    <TabPane fx:id="tabPane" styleClass="results-tabs" VBox.vgrow="ALWAYS" tabClosingPolicy="UNAVAILABLE">
-                        <!-- Table Tab -->
-                        <Tab text="Tabuľka">
-                            <graphic>
-                                <FontIcon iconLiteral="fa-table" iconSize="14"/>
-                            </graphic>
-                            <VBox spacing="14">
-                                <padding>
-                                    <Insets top="14" right="0" bottom="0" left="0"/>
-                                </padding>
+                    <!-- Charts grid display area (1x2 grid) -->
+                    <GridPane fx:id="chartsGrid" hgap="16" vgap="16" VBox.vgrow="ALWAYS" styleClass="charts-grid">
+                        <padding>
+                            <Insets top="10" right="0" bottom="10" left="0"/>
+                        </padding>
+                        <columnConstraints>
+                            <ColumnConstraints percentWidth="50" hgrow="ALWAYS"/>
+                            <ColumnConstraints percentWidth="50" hgrow="ALWAYS"/>
+                        </columnConstraints>
+                        <rowConstraints>
+                            <RowConstraints percentHeight="100" vgrow="ALWAYS"/>
+                        </rowConstraints>
+                    </GridPane>
 
-                                <!-- Table -->
-                                <TableView fx:id="routesTable" styleClass="routes-table" VBox.vgrow="ALWAYS">
-                                    <columns>
-                                        <TableColumn text="#" fx:id="colRank" prefWidth="70"/>
-                                        <TableColumn text="SEKVENCIA TRASY" fx:id="colSequence" prefWidth="560"/>
-                                        <TableColumn text="PRIEMERNÝ ČAS" fx:id="colAvg" prefWidth="160"/>
-                                    </columns>
-                                </TableView>
-
-                            </VBox>
-                        </Tab>
-
-                        <!-- Charts Tab -->
-                        <Tab text="Grafy">
-                            <graphic>
-                                <FontIcon iconLiteral="fa-line-chart" iconSize="14"/>
-                            </graphic>
-                            <VBox spacing="14" fx:id="chartsContainer">
-                                <padding>
-                                    <Insets top="14" right="0" bottom="0" left="0"/>
-                                </padding>
-
-                                <!-- Charts grid display area (2x2 grid) -->
-                                <GridPane fx:id="chartsGrid" hgap="16" vgap="16" VBox.vgrow="ALWAYS" styleClass="charts-grid">
-                                    <padding>
-                                        <Insets top="10" right="0" bottom="10" left="0"/>
-                                    </padding>
-                                    <columnConstraints>
-                                        <ColumnConstraints percentWidth="50" hgrow="ALWAYS"/>
-                                        <ColumnConstraints percentWidth="50" hgrow="ALWAYS"/>
-                                    </columnConstraints>
-                                    <rowConstraints>
-                                        <RowConstraints percentHeight="50" vgrow="ALWAYS"/>
-                                        <RowConstraints percentHeight="50" vgrow="ALWAYS"/>
-                                    </rowConstraints>
-                                </GridPane>
-                            </VBox>
-                        </Tab>
-                    </TabPane>
-
-                    <!-- Shared Pagination (used by both tabs) -->
+                    <!-- Pagination -->
                     <HBox alignment="CENTER">
                         <Pagination fx:id="pagination" styleClass="pagination"/>
                     </HBox>
