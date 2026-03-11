@@ -4,7 +4,6 @@ import javafx.beans.property.*;
 
 /**
  * Singleton holding all user-configurable simulation parameters.
- * Both the configuration view and the simulation classes read/write through this.
  */
 public final class SimulationConfig {
 
