@@ -1,8 +1,9 @@
 package uniza.fri.majba.dis1.traversal_simulation;
 
 import uniza.fri.majba.dis1.simulation_core.Replication;
+import uniza.fri.majba.dis1.traversal_simulation.dto.RouteParameters;
 import uniza.fri.majba.dis1.traversal_simulation.graph.Path;
-import uniza.fri.majba.dis1.ui.model.SimulationConfig;
+import uniza.fri.majba.dis1.traversal_simulation.graph.TraversalGraph;
 
 import java.util.function.Consumer;
 
@@ -55,6 +56,19 @@ public class SecondTaskReplication implements Replication {
     public void execute() {
         double latestDeparture = findLatestDepartureTime();
         double oneSecondLater = latestDeparture + PRECISION;
+
+        System.out.printf("Latest departure time for %.0f%% on-time arrival by %s: %s%n",
+                REQUIRED_VALID_PERCENTAGE * 100,
+                formatTime(MUST_ARRIVE_BY),
+                formatTime(latestDeparture));
+
+        System.out.printf("  On-time at %s: %.4f%% %n",
+                formatTime(latestDeparture),
+                lastAcceptedOnTimePercentage * 100);
+
+        System.out.printf("  On-time at %s (+1s): %.4f%%%n",
+                formatTime(oneSecondLater),
+                lastRejectedOnTimePercentage * 100);
 
         if (onResultReady == null) {
             return;

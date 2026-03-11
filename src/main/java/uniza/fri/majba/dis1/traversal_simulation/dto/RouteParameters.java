@@ -1,4 +1,4 @@
-package uniza.fri.majba.dis1.traversal_simulation;
+package uniza.fri.majba.dis1.traversal_simulation.dto;
 
 import uniza.fri.majba.dis1.simulation_core.statistics.WeightedSumStatistic;
 import uniza.fri.majba.dis1.traversal_simulation.graph.Path;

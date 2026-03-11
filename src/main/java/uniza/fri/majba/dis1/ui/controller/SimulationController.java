@@ -18,6 +18,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import uniza.fri.majba.dis1.simulation_core.SimulationCore;
 import uniza.fri.majba.dis1.traversal_simulation.*;
+import uniza.fri.majba.dis1.traversal_simulation.dto.ReplicationResult;
+import uniza.fri.majba.dis1.traversal_simulation.dto.RouteResult;
 import uniza.fri.majba.dis1.ui.chart.NumberAxisConverter;
 import uniza.fri.majba.dis1.ui.model.SimulationConfig;
 import uniza.fri.majba.dis1.ui.util.TimeUtil;
@@ -185,8 +187,6 @@ public final class SimulationController {
         skipCount = skipPercentage == 0 ? 0 : (int) Math.floor((skipPercentage / 100.0) * numberOfReplications);
         stepCount = Math.round(numberOfReplications / (numberOfReplications * (renderPercentage / 100.0)));
 
-        // Rebuild generators so they pick up the latest seed
-        TraversalSimulationConstants.rebuildGenerators();
 
         contentPanel.setVisible(true);
         contentPanel.setManaged(true);

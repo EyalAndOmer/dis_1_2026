@@ -65,22 +65,21 @@
                         <TextField fx:id="skipPercentageField" styleClass="toolbar-input"
                                    GridPane.columnIndex="1" GridPane.rowIndex="2"/>
 
-                        <Label text="Kolko % bočet reodov vykresliť" styleClass="config-label"
+                        <Label text="Kolko % replikácií vykresliť" styleClass="config-label"
                                GridPane.columnIndex="0" GridPane.rowIndex="3"/>
                         <TextField fx:id="renderPercentageField" styleClass="toolbar-input"
                                    GridPane.columnIndex="1" GridPane.rowIndex="3"/>
 
-                        <Label text="Čas začiatku simulácie (h)" styleClass="config-label"
-                               GridPane.columnIndex="0" GridPane.rowIndex="4"/>
-
                         <Label text="Počet bodov na grafe" styleClass="config-label"
-                               GridPane.columnIndex="0" GridPane.rowIndex="5"/>
+                               GridPane.columnIndex="0" GridPane.rowIndex="4"/>
                         <Label fx:id="chartPointsLabel" text="—" styleClass="config-label"
-                               GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+                               GridPane.columnIndex="1" GridPane.rowIndex="4"/>
 
+                        <Label text="Čas začiatku simulácie (h)" styleClass="config-label"
+                               GridPane.columnIndex="0" GridPane.rowIndex="5"/>
                         <Spinner fx:id="simulationStartTimeSpinner"
                                  GridPane.columnIndex="1"
-                                 GridPane.rowIndex="4"
+                                 GridPane.rowIndex="5"
                                  maxWidth="Infinity"/>
                     </GridPane>
                 </VBox>

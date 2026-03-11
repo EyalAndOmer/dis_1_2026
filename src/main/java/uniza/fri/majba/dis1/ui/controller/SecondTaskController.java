@@ -16,7 +16,6 @@ import uniza.fri.majba.dis1.simulation_core.SimulationCore;
 import uniza.fri.majba.dis1.traversal_simulation.MonteCarloSimulationCore;
 import uniza.fri.majba.dis1.traversal_simulation.SecondTaskReplication;
 import uniza.fri.majba.dis1.traversal_simulation.SecondTaskResult;
-import uniza.fri.majba.dis1.traversal_simulation.TraversalSimulationConstants;
 import java.io.IOException;
 
 public final class SecondTaskController {
@@ -25,7 +24,6 @@ public final class SecondTaskController {
     @FXML private Button startButton;
     @FXML private Button backButton;
     @FXML private Button configButton;
-    @FXML private Label statusLabel;
     @FXML private VBox resultsCard;
 
     @FXML private Label resultRouteName;
@@ -57,22 +55,17 @@ public final class SecondTaskController {
 
         int selectedIndex = routeComboBox.getSelectionModel().getSelectedIndex();
         if (selectedIndex < 0) {
-            statusLabel.setText("Vyberte trasu!");
             return;
         }
 
-        // Reset UI
         resultsCard.setVisible(false);
         resultsCard.setManaged(false);
-        statusLabel.setText("Simulácia beží…");
         startButton.setDisable(true);
 
         SecondTaskReplication replication = new SecondTaskReplication();
         replication.setSelectedRouteIndex(selectedIndex);
         replication.setOnResultReady(this::onResultReady);
 
-        // Rebuild generators so they pick up the latest seed
-        TraversalSimulationConstants.rebuildGenerators();
 
         SimulationCore core = new MonteCarloSimulationCore(replication);
 
@@ -86,12 +79,10 @@ public final class SecondTaskController {
 
         task.setOnSucceeded(event -> {
             startButton.setDisable(false);
-            statusLabel.setText("Dokončené ✓");
         });
 
         task.setOnFailed(event -> {
             startButton.setDisable(false);
-            statusLabel.setText("Chyba!");
             Throwable ex = task.getException();
             if (ex != null) {
                 ex.printStackTrace();

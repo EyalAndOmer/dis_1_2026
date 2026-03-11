@@ -62,17 +62,6 @@
                            styleClass="page-subtitle"/>
                 </VBox>
 
-                <HBox spacing="12" alignment="CENTER_LEFT">
-                    <VBox styleClass="kpi-card" spacing="4">
-                        <HBox spacing="6" alignment="CENTER_LEFT">
-                            <FontIcon iconLiteral="fa-info-circle" iconSize="12"/>
-                            <Label text="STAV" styleClass="kpi-label"/>
-                        </HBox>
-                        <Label fx:id="statusLabel" text="Čaká na spustenie" styleClass="kpi-value"
-                               style="-fx-font-size: 14px;"/>
-                    </VBox>
-                </HBox>
-
                 <VBox fx:id="resultsCard" styleClass="card" spacing="18" visible="false" managed="false"
                       VBox.vgrow="ALWAYS">
                     <padding>
@@ -97,11 +86,11 @@
                         </VBox>
 
                         <VBox styleClass="result-item" spacing="4" GridPane.columnIndex="0" GridPane.rowIndex="1">
-                            <Label text="NAJNESKORŠÍ ODCHOD" styleClass="result-label"/>
+                            <Label text="Najneskorši odchod" styleClass="result-label"/>
                             <Label fx:id="resultDepartureTime" text="—" styleClass="result-value-large"/>
                         </VBox>
                         <VBox styleClass="result-item" spacing="4" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                            <Label text="MUSÍ BYŤ V CIELI DO" styleClass="result-label"/>
+                            <Label text="Musi byť V Ziline do" styleClass="result-label"/>
                             <Label fx:id="resultArrivalDeadline" text="—" styleClass="result-value-large"/>
                         </VBox>
                     </GridPane>
