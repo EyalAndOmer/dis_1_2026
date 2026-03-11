@@ -14,7 +14,7 @@ public final class TraversalGraph {
         // utility class
     }
 
-    public static List<RouteParameters> buildRoutes() {
+    public static List<RouteParameters> buildRoutes(SimulationConfig config) {
         final List<EmpiricGeneratorConfiguration> BLACK_EDGE_GENERATOR_CONFIGURATION = List.of(
                 new EmpiricGeneratorConfiguration(10, 20, 0.1),
                 new EmpiricGeneratorConfiguration(20, 32, 0.5),
@@ -29,7 +29,7 @@ public final class TraversalGraph {
                 new EmpiricGeneratorConfiguration(45, 64, 0.4)
         );
 
-        Random seedGenerator = new Random(SimulationConfig.getInstance().getSeedGeneratorSeed());
+        Random seedGenerator = new Random(config.getSeedGeneratorSeed());
         DiscreteUniformGenerator redEdgeGenerator = new DiscreteUniformGenerator(55, 75, seedGenerator);
         ContinuousUniformGenerator greenEdgeGenerator = new ContinuousUniformGenerator(50, 80, seedGenerator);
         ContinuousEmpiricGenerator blackEdgeGenerator = new ContinuousEmpiricGenerator(BLACK_EDGE_GENERATOR_CONFIGURATION, seedGenerator);

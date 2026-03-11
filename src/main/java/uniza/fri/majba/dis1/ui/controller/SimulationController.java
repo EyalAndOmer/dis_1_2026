@@ -45,7 +45,6 @@ public final class SimulationController {
 
     private static final int CHARTS_PER_PAGE = 2;
 
-    /** Route names in the order returned by TraversalGraph.buildRoutes(). */
     private static final String[] ROUTE_NAMES = {
             "Žilina --> Divinka --> Strečno --> Rajecké Teplice --> Žilina",
             "Žilina --> Divinka --> Rajecké Teplice --> Strečno --> Žilina",
@@ -57,8 +56,15 @@ public final class SimulationController {
 
     private SimulationCore simulationCore;
     private Thread simulationThread;
+    private SimulationConfig config = new SimulationConfig();
 
-    /** Ordered map: route name → its dataset. Preserves insertion order. */
+    public void setConfig(SimulationConfig config) {
+        this.config = config;
+        TraversalReplication replication = new TraversalReplication(config);
+        replication.setOnAfterReplication(this::onReplicationComplete);
+        this.simulationCore = new MonteCarloSimulationCore(replication);
+    }
+
     private final Map<String, DoubleDataSet> dataSetMap = new LinkedHashMap<>();
     private final List<XYChart> charts = new ArrayList<>();
     private final List<VBox> chartWrappers = new ArrayList<>();
@@ -70,7 +76,7 @@ public final class SimulationController {
 
     @FXML
     void initialize() {
-        TraversalReplication replication = new TraversalReplication();
+        TraversalReplication replication = new TraversalReplication(config);
         replication.setOnAfterReplication(this::onReplicationComplete);
         this.simulationCore = new MonteCarloSimulationCore(replication);
 
@@ -127,13 +133,11 @@ public final class SimulationController {
                     "-fx-padding: 10;"
             );
             VBox.setVgrow(chart, Priority.ALWAYS);
-            // Start hidden; showChartsPage will reveal the first page
             wrapper.setVisible(false);
             wrapper.setManaged(false);
             chartWrappers.add(wrapper);
             chartValueLabels.add(valueLabel);
 
-            // Place all wrappers into the grid permanently (column cycles 0..1)
             int col = idx % CHARTS_PER_PAGE;
             int row = idx / CHARTS_PER_PAGE;
             chartsGrid.add(wrapper, col, row);
@@ -165,8 +169,7 @@ public final class SimulationController {
     void onStartSimulation() {
         this.startButton.setDisable(true);
         this.stopButton.setDisable(false);
-        this.resumeButton.setDisable(false);
-        // Reset datasets
+        this.resumeButton.setDisable(true);
         replicationCounter = 0;
         startTimeMillis = System.currentTimeMillis();
         kpiIterationsValue.setText("0");
@@ -178,8 +181,7 @@ public final class SimulationController {
             lbl.setText("—");
         }
 
-        // Compute rendering schedule
-        SimulationConfig cfg = SimulationConfig.getInstance();
+        SimulationConfig cfg = config;
         int numberOfReplications = cfg.getDefaultReplications();
         double skipPercentage = cfg.getSkipPercentage();
         double renderPercentage = cfg.getRenderPercentage();
@@ -273,6 +275,7 @@ public final class SimulationController {
             Parent root = loader.load();
             ConfigController controller = loader.getController();
             controller.setReturnViewPath("/chart_view.fxml");
+            controller.setConfig(config);
 
             Stage stage = (Stage) configButton.getScene().getWindow();
             stage.getScene().setRoot(root);

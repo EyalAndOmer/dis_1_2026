@@ -19,7 +19,6 @@ public abstract class EmpiricGenerator extends Generator {
     protected final Random seedGenerator;
 
 
-    // TODO posielat generator nasad do konstruktora
     protected EmpiricGenerator(List<EmpiricGeneratorConfiguration> configurations, Random seedGenerator) {
         this.probabilityRandom = new Random();
         this.seedGenerator = seedGenerator;

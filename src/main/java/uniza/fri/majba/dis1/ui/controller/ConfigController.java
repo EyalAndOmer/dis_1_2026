@@ -24,22 +24,36 @@ public final class ConfigController {
     @FXML private TextField skipPercentageField;
     @FXML private TextField renderPercentageField;
 
-    // Task 2
     @FXML private Spinner<Double> simulationStartTimeSpinner;
 
     /** Which view to return to: "/chart_view.fxml" or "/second_task_view.fxml". */
     private String returnViewPath = "/chart_view.fxml";
 
+    private SimulationConfig config = new SimulationConfig();
+
     public void setReturnViewPath(String path) {
         this.returnViewPath = path;
     }
 
+    public void setConfig(SimulationConfig config) {
+        this.config = config;
+        populateFields();
+    }
+
     @FXML
     void initialize() {
-        SimulationConfig cfg = SimulationConfig.getInstance();
+        populateFields();
+
+        replicationsField.textProperty().addListener((obs, o, n) -> updateChartPoints());
+        skipPercentageField.textProperty().addListener((obs, o, n) -> updateChartPoints());
+        renderPercentageField.textProperty().addListener((obs, o, n) -> updateChartPoints());
+        updateChartPoints();
+    }
+
+    private void populateFields() {
+        SimulationConfig cfg = config;
 
         seedField.setText(String.valueOf(cfg.getSeedGeneratorSeed()));
-
         replicationsField.setText(String.valueOf(cfg.getDefaultReplications()));
         skipPercentageField.setText(String.valueOf(cfg.getSkipPercentage()));
         renderPercentageField.setText(String.valueOf(cfg.getRenderPercentage()));
@@ -48,11 +62,6 @@ public final class ConfigController {
                 0.0, 23.99, cfg.getSimulationStartTime(), 0.25);
         simulationStartTimeSpinner.setValueFactory(svf);
         simulationStartTimeSpinner.setEditable(true);
-
-        // Update chart points label reactively
-        replicationsField.textProperty().addListener((obs, o, n) -> updateChartPoints());
-        skipPercentageField.textProperty().addListener((obs, o, n) -> updateChartPoints());
-        renderPercentageField.textProperty().addListener((obs, o, n) -> updateChartPoints());
         updateChartPoints();
     }
 
@@ -85,7 +94,7 @@ public final class ConfigController {
     }
 
     private boolean applyValues() {
-        SimulationConfig cfg = SimulationConfig.getInstance();
+        SimulationConfig cfg = config;
         try {
             cfg.setSeedGeneratorSeed(Long.parseLong(seedField.getText().trim()));
 
@@ -110,6 +119,13 @@ public final class ConfigController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(returnViewPath));
             Parent root = loader.load();
+
+            Object controller = loader.getController();
+            if (controller instanceof SimulationController sc) {
+                sc.setConfig(config);
+            } else if (controller instanceof SecondTaskController stc) {
+                stc.setConfig(config);
+            }
 
             Stage stage = (Stage) backButton.getScene().getWindow();
             stage.getScene().setRoot(root);

@@ -26,7 +26,6 @@ public final class KEdge<V> extends Edge<V> {
      */
     @Override
     public double getTraversalTime(double departureTime) {
-        // TODO spomalenie iba ked idem z bodu K
         double speed = generator().generate();
         if (departureTime > K_SLOWDOWN_THRESHOLD) {
             double slowdownPercentage = slowdownGenerator.generate();

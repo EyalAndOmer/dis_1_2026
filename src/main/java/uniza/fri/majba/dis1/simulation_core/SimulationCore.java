@@ -7,7 +7,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public abstract class SimulationCore {
     private final Replication replication;
-    private volatile boolean paused = false;
     private final AtomicBoolean pauseRequested = new AtomicBoolean(false);
 
     protected SimulationCore(Replication replication) {
@@ -31,13 +30,12 @@ public abstract class SimulationCore {
             while (pauseRequested.get()) {
                 try {
                     Thread.sleep(100); // Sleep briefly to avoid busy-waiting
-                    this.paused = true;
                 } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt(); // Restore interrupted status
+                    Thread.currentThread().interrupt();
                     break;
                 }
-
             }
+
             this.replication.beforeReplication();
             this.replication.execute();
             this.replication.afterReplication();
@@ -59,8 +57,6 @@ public abstract class SimulationCore {
      * Resumes the simulation if it is currently paused. If the simulation is not paused, this method does nothing.
      */
     public void resumeSimulation() {
-        if (paused) {
-            pauseRequested.set(false);
-        }
+        pauseRequested.set(false);
     }
 }

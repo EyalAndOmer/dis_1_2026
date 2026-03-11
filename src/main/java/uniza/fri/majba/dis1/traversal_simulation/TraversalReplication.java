@@ -12,20 +12,24 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public final class TraversalReplication implements Replication {
+    private final SimulationConfig config;
     private List<RouteParameters> routes;
     private Consumer<ReplicationResult> onAfterReplication;
 
+    public TraversalReplication(SimulationConfig config) {
+        this.config = config;
+    }
+
     @Override
     public void beforeAllReplications() {
-        routes = TraversalGraph.buildRoutes();
+        routes = TraversalGraph.buildRoutes(config);
     }
 
     @Override
     public void afterAllReplications() {
         for (RouteParameters route : routes) {
             double hours = route.weightedSumStatistic().calculateStatistic();
-            // Convert hours (possibly fractional) to milliseconds to preserve sub-second precision
-            long totalMillis = Math.round(hours * 3_600_000.0); // 1 hour = 3_600_000 ms
+            long totalMillis = Math.round(hours * 3_600_000.0);
 
             long hrs = totalMillis / 3_600_000;
             long rem = totalMillis % 3_600_000;
@@ -67,7 +71,7 @@ public final class TraversalReplication implements Replication {
     @Override
     public void execute() {
         for (RouteParameters route : routes) {
-            double currentPathTime = SimulationConfig.getInstance().getSimulationStartTime();
+            double currentPathTime = config.getSimulationStartTime();
 
             for (Path path : route.path()) {
                 // Recursively evaluate all possible complete routes between the two cities

@@ -1,5 +1,6 @@
 package uniza.fri.majba.dis1;
 
+import atlantafx.base.theme.PrimerDark;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -16,6 +17,9 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
+        // Apply AtlantaFX theme
+        Application.setUserAgentStylesheet(new PrimerDark().getUserAgentStylesheet());
+
         // Load the FXML file
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/chart_view.fxml"));
         Parent root = loader.load();

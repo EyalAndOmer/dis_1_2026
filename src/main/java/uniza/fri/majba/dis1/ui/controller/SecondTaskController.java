@@ -15,7 +15,8 @@ import javafx.stage.Stage;
 import uniza.fri.majba.dis1.simulation_core.SimulationCore;
 import uniza.fri.majba.dis1.traversal_simulation.MonteCarloSimulationCore;
 import uniza.fri.majba.dis1.traversal_simulation.SecondTaskReplication;
-import uniza.fri.majba.dis1.traversal_simulation.SecondTaskResult;
+import uniza.fri.majba.dis1.traversal_simulation.dto.SecondTaskResult;
+import uniza.fri.majba.dis1.ui.model.SimulationConfig;
 import java.io.IOException;
 
 public final class SecondTaskController {
@@ -40,6 +41,11 @@ public final class SecondTaskController {
     };
 
     private Thread simulationThread;
+    private SimulationConfig config = new SimulationConfig();
+
+    public void setConfig(SimulationConfig config) {
+        this.config = config;
+    }
 
     @FXML
     void initialize() {
@@ -62,7 +68,7 @@ public final class SecondTaskController {
         resultsCard.setManaged(false);
         startButton.setDisable(true);
 
-        SecondTaskReplication replication = new SecondTaskReplication();
+        SecondTaskReplication replication = new SecondTaskReplication(config);
         replication.setSelectedRouteIndex(selectedIndex);
         replication.setOnResultReady(this::onResultReady);
 
@@ -134,6 +140,7 @@ public final class SecondTaskController {
             Parent root = loader.load();
             ConfigController controller = loader.getController();
             controller.setReturnViewPath("/second_task_view.fxml");
+            controller.setConfig(config);
 
             Stage stage = (Stage) configButton.getScene().getWindow();
             stage.getScene().setRoot(root);

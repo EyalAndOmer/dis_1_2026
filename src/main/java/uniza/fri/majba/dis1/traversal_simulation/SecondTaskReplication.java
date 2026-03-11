@@ -2,8 +2,10 @@ package uniza.fri.majba.dis1.traversal_simulation;
 
 import uniza.fri.majba.dis1.simulation_core.Replication;
 import uniza.fri.majba.dis1.traversal_simulation.dto.RouteParameters;
+import uniza.fri.majba.dis1.traversal_simulation.dto.SecondTaskResult;
 import uniza.fri.majba.dis1.traversal_simulation.graph.Path;
 import uniza.fri.majba.dis1.traversal_simulation.graph.TraversalGraph;
+import uniza.fri.majba.dis1.ui.model.SimulationConfig;
 
 import java.util.function.Consumer;
 
@@ -15,8 +17,13 @@ public class SecondTaskReplication implements Replication {
     public static final double INITIAL_STEP             = 2.0;               // 2 hours
     public static final double PRECISION                = 1.0 / 3600.0;      // 1 second
 
+    private final SimulationConfig config;
     private RouteParameters selectedRoute;
     private int selectedRouteIndex = 3;
+
+    public SecondTaskReplication(SimulationConfig config) {
+        this.config = config;
+    }
 
     /** On-time percentage at the last accepted departure time (from the search). */
     private double lastAcceptedOnTimePercentage;
@@ -37,7 +44,7 @@ public class SecondTaskReplication implements Replication {
     @Override
     public void beforeAllReplications() {
 
-        this.selectedRoute = TraversalGraph.buildRoutes().get(selectedRouteIndex);
+        this.selectedRoute = TraversalGraph.buildRoutes(config).get(selectedRouteIndex);
     }
 
     @Override

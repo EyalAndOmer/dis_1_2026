@@ -51,9 +51,6 @@ public class Path {
     /**
      * Recursively calculates the total traversal time for all possible complete routes from this path
      * to a terminal node, and returns the minimum total time found.
-     * <p>
-     * Unlike {@link #pickNextPath(double)}, which only compares the first edge,
-     * this method evaluates the entire path from the current node to the destination city.
      *
      * @param departureTime The simulation time (in hours) at which the courier departs from this node.
      * @return The minimum total traversal time (in hours) across all possible complete routes to the terminal.
