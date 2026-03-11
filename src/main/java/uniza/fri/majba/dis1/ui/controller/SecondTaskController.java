@@ -17,7 +17,6 @@ import uniza.fri.majba.dis1.traversal_simulation.MonteCarloSimulationCore;
 import uniza.fri.majba.dis1.traversal_simulation.SecondTaskReplication;
 import uniza.fri.majba.dis1.traversal_simulation.SecondTaskResult;
 import uniza.fri.majba.dis1.traversal_simulation.TraversalSimulationConstants;
-
 import java.io.IOException;
 
 public final class SecondTaskController {
@@ -32,10 +31,6 @@ public final class SecondTaskController {
     @FXML private Label resultRouteName;
     @FXML private Label resultDepartureTime;
     @FXML private Label resultArrivalDeadline;
-    @FXML private Label resultAcceptedPct;
-    @FXML private Label resultRejectedPct;
-    @FXML private Label resultRequiredPct;
-    @FXML private Label resultRejectedTime;
 
     private static final String[] ROUTE_NAMES = {
             "Žilina --> Divinka --> Strečno --> Rajecké Teplice --> Žilina",
@@ -114,11 +109,6 @@ public final class SecondTaskController {
             resultRouteName.setText(result.routeName());
             resultDepartureTime.setText(result.latestDepartureTime());
             resultArrivalDeadline.setText(result.mustArriveBy());
-            resultAcceptedPct.setText(String.format("%.4f %%", result.acceptedOnTimePercentage() * 100));
-            resultRejectedPct.setText(String.format("%.4f %%", result.rejectedOnTimePercentage() * 100));
-            resultRequiredPct.setText(String.format("%.0f %%", result.requiredOnTimePercentage() * 100));
-            resultRejectedTime.setText(result.rejectedDepartureTime());
-
             resultsCard.setVisible(true);
             resultsCard.setManaged(true);
         });

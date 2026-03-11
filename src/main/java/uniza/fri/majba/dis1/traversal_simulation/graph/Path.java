@@ -1,6 +1,5 @@
 package uniza.fri.majba.dis1.traversal_simulation.graph;
 
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;

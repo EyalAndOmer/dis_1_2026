@@ -7,11 +7,5 @@ import java.util.List;
  * Acts as the data contract between the simulation layer and the UI.
  */
 public record ReplicationResult(List<RouteResult> routeResults) {
-
-    /**
-     * A single route's running average after the replication.
-     */
-    public record RouteResult(String routeName, double averageTime) {
-    }
 }
 

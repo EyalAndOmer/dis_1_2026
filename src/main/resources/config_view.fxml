@@ -5,14 +5,14 @@
 <?import javafx.scene.layout.*?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
+
 <StackPane xmlns="http://javafx.com/javafx"
            xmlns:fx="http://javafx.com/fxml"
            fx:controller="uniza.fri.majba.dis1.ui.controller.ConfigController"
            styleClass="app-root">
 
-    <VBox spacing="0" prefWidth="1200" prefHeight="760">
+    <VBox prefWidth="1200" prefHeight="760">
 
-        <!-- TOP BAR -->
         <HBox styleClass="topbar" alignment="CENTER_LEFT" spacing="16">
             <padding>
                 <Insets top="14" right="18" bottom="14" left="18"/>
@@ -31,7 +31,6 @@
             <Region HBox.hgrow="ALWAYS"/>
         </HBox>
 
-        <!-- BODY -->
         <ScrollPane fitToWidth="true" styleClass="config-scroll" VBox.vgrow="ALWAYS">
             <VBox styleClass="content" spacing="24">
                 <padding>
@@ -41,7 +40,6 @@
                 <Label text="Parametre simulácie" styleClass="page-title"/>
 
 
-                <!-- ═══════════ Section: First task ═══════════ -->
                 <VBox styleClass="card" spacing="14">
                     <padding>
                         <Insets top="18" right="18" bottom="18" left="18"/>
@@ -62,57 +60,33 @@
                         <TextField fx:id="replicationsField" styleClass="toolbar-input"
                                    GridPane.columnIndex="1" GridPane.rowIndex="1"/>
 
-                        <Label text="Preskočiť prvých (% replikácií)" styleClass="config-label"
+                        <Label text="Kolko % replikácií preskočiť" styleClass="config-label"
                                GridPane.columnIndex="0" GridPane.rowIndex="2"/>
                         <TextField fx:id="skipPercentageField" styleClass="toolbar-input"
                                    GridPane.columnIndex="1" GridPane.rowIndex="2"/>
 
-                        <Label text="Vykresliť (% bodov)" styleClass="config-label"
+                        <Label text="Kolko % bočet reodov vykresliť" styleClass="config-label"
                                GridPane.columnIndex="0" GridPane.rowIndex="3"/>
                         <TextField fx:id="renderPercentageField" styleClass="toolbar-input"
                                    GridPane.columnIndex="1" GridPane.rowIndex="3"/>
 
-                        <Label text="Monte Carlo vzorky" styleClass="config-label"
+                        <Label text="Čas začiatku simulácie (h)" styleClass="config-label"
                                GridPane.columnIndex="0" GridPane.rowIndex="4"/>
-                        <TextField fx:id="monteCarloSamplesField" styleClass="toolbar-input"
-                                   GridPane.columnIndex="1" GridPane.rowIndex="4"/>
 
-                        <Label text="Najskorší odchod (h)" styleClass="config-label"
+                        <Label text="Počet bodov na grafe" styleClass="config-label"
                                GridPane.columnIndex="0" GridPane.rowIndex="5"/>
-                        <TextField fx:id="earliestDepartureField" styleClass="toolbar-input"
-                                   GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+                        <Label fx:id="chartPointsLabel" text="—" styleClass="config-label"
+                               GridPane.columnIndex="1" GridPane.rowIndex="5"/>
 
-                        <Label text="Príchod do – hodina" styleClass="config-label"
-                               GridPane.columnIndex="0" GridPane.rowIndex="6"/>
-                        <TextField fx:id="arriveByHourField" styleClass="toolbar-input"
-                                   GridPane.columnIndex="1" GridPane.rowIndex="6"/>
-
-                        <Label text="Príchod do – minúta" styleClass="config-label"
-                               GridPane.columnIndex="0" GridPane.rowIndex="7"/>
-                        <TextField fx:id="arriveByMinuteField" styleClass="toolbar-input"
-                                   GridPane.columnIndex="1" GridPane.rowIndex="7"/>
-
-                        <Label text="Požadovaná včasnosť (%)" styleClass="config-label"
-                               GridPane.columnIndex="0" GridPane.rowIndex="8"/>
-                        <TextField fx:id="requiredOnTimePctField" styleClass="toolbar-input"
-                                   GridPane.columnIndex="1" GridPane.rowIndex="8"/>
-
-                        <Label text="Počiatočný krok (h)" styleClass="config-label"
-                               GridPane.columnIndex="0" GridPane.rowIndex="9"/>
-                        <TextField fx:id="initialStepField" styleClass="toolbar-input"
-                                   GridPane.columnIndex="1" GridPane.rowIndex="9"/>
-
-                        <Label text="Presnosť (h, napr. 0.000278 = 1s)" styleClass="config-label"
-                               GridPane.columnIndex="0" GridPane.rowIndex="10"/>
-                        <TextField fx:id="precisionField" styleClass="toolbar-input"
-                                   GridPane.columnIndex="1" GridPane.rowIndex="10"/>
+                        <Spinner fx:id="simulationStartTimeSpinner"
+                                 GridPane.columnIndex="1"
+                                 GridPane.rowIndex="4"
+                                 maxWidth="Infinity"/>
                     </GridPane>
                 </VBox>
 
-                <!-- Status label -->
-                <Label fx:id="statusLabel" text="" styleClass="page-subtitle"/>
+                <Label fx:id="statusLabel" styleClass="page-subtitle"/>
 
-                <!-- Save / Cancel buttons -->
                 <HBox spacing="12" alignment="CENTER_RIGHT">
                     <Button text="Zrušiť" styleClass="btn btn-secondary btn-toolbar" onAction="#onBack">
                         <graphic>

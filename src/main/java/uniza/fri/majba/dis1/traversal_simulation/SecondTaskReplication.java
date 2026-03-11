@@ -8,12 +8,11 @@ import java.util.function.Consumer;
 
 public class SecondTaskReplication implements Replication {
 
-    private int monteCarloSamples;
-    private double earliestDeparture;
-    private double mustArriveBy;
-    private double requiredOnTimePercentage;
-    private double initialStep;
-    private double precision;
+    public static final double EARLIEST_DEPARTURE       = 6.0;
+    public static final double MUST_ARRIVE_BY           = 7.0 + 35.0 / 60.0; // 7:35
+    public static final double REQUIRED_VALID_PERCENTAGE = 0.80;
+    public static final double INITIAL_STEP             = 2.0;               // 2 hours
+    public static final double PRECISION                = 1.0 / 3600.0;      // 1 second
 
     private RouteParameters selectedRoute;
     private int selectedRouteIndex = 3;
@@ -36,13 +35,6 @@ public class SecondTaskReplication implements Replication {
 
     @Override
     public void beforeAllReplications() {
-        SimulationConfig cfg = SimulationConfig.getInstance();
-        this.monteCarloSamples = cfg.getMonteCarloSamples();
-        this.earliestDeparture = cfg.getEarliestDeparture();
-        this.mustArriveBy = cfg.getMustArriveBy();
-        this.requiredOnTimePercentage = cfg.getRequiredOnTimePercentage();
-        this.initialStep = cfg.getInitialStep();
-        this.precision = cfg.getPrecision();
 
         this.selectedRoute = TraversalGraph.buildRoutes().get(selectedRouteIndex);
     }
@@ -62,62 +54,34 @@ public class SecondTaskReplication implements Replication {
     @Override
     public void execute() {
         double latestDeparture = findLatestDepartureTime();
-        double oneSecondLater = latestDeparture + precision;
+        double oneSecondLater = latestDeparture + PRECISION;
 
-        System.out.printf("Latest departure time for %.0f%% on-time arrival by %s: %s%n",
-                requiredOnTimePercentage * 100,
-                formatTime(mustArriveBy),
-                formatTime(latestDeparture));
-
-        System.out.printf("  On-time at %s: %.4f%% (>= %.0f%% ✓)%n",
-                formatTime(latestDeparture),
-                lastAcceptedOnTimePercentage * 100,
-                requiredOnTimePercentage * 100);
-
-        System.out.printf("  On-time at %s (+1s): %.4f%% (< %.0f%% ✗)%n",
-                formatTime(oneSecondLater),
-                lastRejectedOnTimePercentage * 100,
-                requiredOnTimePercentage * 100);
-
-        if (onResultReady != null) {
-            onResultReady.accept(new SecondTaskResult(
-                    selectedRoute.routeName(),
-                    formatTime(latestDeparture),
-                    formatTime(mustArriveBy),
-                    lastAcceptedOnTimePercentage,
-                    lastRejectedOnTimePercentage,
-                    formatTime(oneSecondLater),
-                    requiredOnTimePercentage
-            ));
+        if (onResultReady == null) {
+            return;
         }
+
+        onResultReady.accept(new SecondTaskResult(
+                selectedRoute.routeName(),
+                formatTime(latestDeparture),
+                formatTime(MUST_ARRIVE_BY),
+                lastAcceptedOnTimePercentage,
+                lastRejectedOnTimePercentage,
+                formatTime(oneSecondLater),
+                REQUIRED_VALID_PERCENTAGE
+        ));
     }
 
-    /**
-     * Finds the latest departure time starting from {@link #EARLIEST_DEPARTURE}
-     * that still guarantees at least
-     * {@link #REQUIRED_ON_TIME_PERCENTAGE} probability of arriving before
-     * {@link #MUST_ARRIVE_BY}.
-     * <p>
-     * The departure time is gradually increased from {@link #EARLIEST_DEPARTURE}
-     * with a decreasing step. When a candidate time fails the on-time check,
-     * the algorithm steps back and reduces the step size, refining the result
-     * until it reaches {@link #PRECISION} (1 second).
-     * <p>
-     * After the search, {@link #lastAcceptedOnTimePercentage} holds the on-time
-     * percentage at the returned departure time, and {@link #lastRejectedOnTimePercentage}
-     * holds the percentage at the first departure time that was rejected (1 step later).
-     */
     private double findLatestDepartureTime() {
-        double departureTime = earliestDeparture;
-        double step = initialStep;
+        double departureTime = EARLIEST_DEPARTURE;
+        double step = INITIAL_STEP;
 
         lastAcceptedOnTimePercentage = estimateOnTimePercentage(departureTime);
 
-        while (step >= precision) {
+        while (step >= PRECISION) {
             double candidate = departureTime + step;
             double onTimePercentage = estimateOnTimePercentage(candidate);
 
-            if (onTimePercentage >= requiredOnTimePercentage) {
+            if (onTimePercentage >= REQUIRED_VALID_PERCENTAGE) {
                 departureTime = candidate;
                 lastAcceptedOnTimePercentage = onTimePercentage;
             } else {
@@ -129,27 +93,28 @@ public class SecondTaskReplication implements Replication {
         return departureTime;
     }
 
-    /**
-     * Runs {@link #MONTE_CARLO_SAMPLES} random trips departing at
-     * {@code departureTime} and returns the fraction that arrive
-     * before {@link #MUST_ARRIVE_BY}.
-     */
+    /** Number of Monte Carlo samples used per binary-search step.
+     *  Kept well below getDefaultReplications() to keep the search tractable:
+     *  the binary search calls this method O(log2(INITIAL_STEP / PRECISION)) times,
+     *  so using 10M here would mean hundreds of billions of path evaluations. */
+    private static final int ESTIMATION_SAMPLES = 100_000;
+
     private double estimateOnTimePercentage(double departureTime) {
         int onTimeCount = 0;
 
-        for (int i = 0; i < monteCarloSamples; i++) {
+        for (int i = 0; i < ESTIMATION_SAMPLES; i++) {
             double currentTime = departureTime;
 
             for (Path path : selectedRoute.path()) {
                 currentTime += path.calculateBestCompleteTotalTime(currentTime);
             }
 
-            if (currentTime < mustArriveBy) {
+            if (currentTime < MUST_ARRIVE_BY) {
                 onTimeCount++;
             }
         }
 
-        return (double) onTimeCount / monteCarloSamples;
+        return (double) onTimeCount / ESTIMATION_SAMPLES;
     }
 
     private static String formatTime(double hours) {

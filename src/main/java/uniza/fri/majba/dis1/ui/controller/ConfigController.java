@@ -5,6 +5,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import uniza.fri.majba.dis1.ui.model.SimulationConfig;
@@ -15,23 +17,15 @@ public final class ConfigController {
 
     @FXML private Button backButton;
     @FXML private Label statusLabel;
+    @FXML private Label chartPointsLabel;
 
-    // Seed
     @FXML private TextField seedField;
-
-    // Task 1
     @FXML private TextField replicationsField;
     @FXML private TextField skipPercentageField;
     @FXML private TextField renderPercentageField;
 
     // Task 2
-    @FXML private TextField monteCarloSamplesField;
-    @FXML private TextField earliestDepartureField;
-    @FXML private TextField arriveByHourField;
-    @FXML private TextField arriveByMinuteField;
-    @FXML private TextField requiredOnTimePctField;
-    @FXML private TextField initialStepField;
-    @FXML private TextField precisionField;
+    @FXML private Spinner<Double> simulationStartTimeSpinner;
 
     /** Which view to return to: "/chart_view.fxml" or "/second_task_view.fxml". */
     private String returnViewPath = "/chart_view.fxml";
@@ -50,13 +44,32 @@ public final class ConfigController {
         skipPercentageField.setText(String.valueOf(cfg.getSkipPercentage()));
         renderPercentageField.setText(String.valueOf(cfg.getRenderPercentage()));
 
-        monteCarloSamplesField.setText(String.valueOf(cfg.getMonteCarloSamples()));
-        earliestDepartureField.setText(String.valueOf(cfg.getEarliestDeparture()));
-        arriveByHourField.setText(String.valueOf(cfg.getMustArriveByHour()));
-        arriveByMinuteField.setText(String.valueOf(cfg.getMustArriveByMinute()));
-        requiredOnTimePctField.setText(String.valueOf(cfg.getRequiredOnTimePercentage() * 100));
-        initialStepField.setText(String.valueOf(cfg.getInitialStep()));
-        precisionField.setText(String.valueOf(cfg.getPrecision()));
+        SpinnerValueFactory<Double> svf = new SpinnerValueFactory.DoubleSpinnerValueFactory(
+                0.0, 23.99, cfg.getSimulationStartTime(), 0.25);
+        simulationStartTimeSpinner.setValueFactory(svf);
+        simulationStartTimeSpinner.setEditable(true);
+
+        // Update chart points label reactively
+        replicationsField.textProperty().addListener((obs, o, n) -> updateChartPoints());
+        skipPercentageField.textProperty().addListener((obs, o, n) -> updateChartPoints());
+        renderPercentageField.textProperty().addListener((obs, o, n) -> updateChartPoints());
+        updateChartPoints();
+    }
+
+    private void updateChartPoints() {
+        try {
+            int replications = Integer.parseInt(replicationsField.getText().trim());
+            double skipPct = Double.parseDouble(skipPercentageField.getText().trim());
+            double renderPct = Double.parseDouble(renderPercentageField.getText().trim());
+
+            long skipCount = Math.round(replications * skipPct / 100.0);
+            long activeCount = replications - skipCount;
+            long chartPoints = Math.round(activeCount * renderPct / 100.0);
+
+            chartPointsLabel.setText(String.valueOf(chartPoints));
+        } catch (NumberFormatException e) {
+            chartPointsLabel.setText("—");
+        }
     }
 
     @FXML
@@ -80,14 +93,8 @@ public final class ConfigController {
             cfg.setSkipPercentage(Double.parseDouble(skipPercentageField.getText().trim()));
             cfg.setRenderPercentage(Double.parseDouble(renderPercentageField.getText().trim()));
 
-            cfg.setMonteCarloSamples(Integer.parseInt(monteCarloSamplesField.getText().trim()));
-            cfg.setEarliestDeparture(Double.parseDouble(earliestDepartureField.getText().trim()));
-            cfg.setMustArriveByHour(Integer.parseInt(arriveByHourField.getText().trim()));
-            cfg.setMustArriveByMinute(Integer.parseInt(arriveByMinuteField.getText().trim()));
-            cfg.setRequiredOnTimePercentage(
-                    Double.parseDouble(requiredOnTimePctField.getText().trim()) / 100.0);
-            cfg.setInitialStep(Double.parseDouble(initialStepField.getText().trim()));
-            cfg.setPrecision(Double.parseDouble(precisionField.getText().trim()));
+            simulationStartTimeSpinner.commitValue();
+            cfg.setSimulationStartTime(simulationStartTimeSpinner.getValue());
 
             statusLabel.setText("Konfigurácia uložená ✓");
             statusLabel.setStyle("-fx-text-fill: #34d399;");
@@ -111,4 +118,3 @@ public final class ConfigController {
         }
     }
 }
-

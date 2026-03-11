@@ -12,13 +12,11 @@
 
     <VBox spacing="0" prefWidth="1200" prefHeight="760">
 
-        <!-- TOP BAR -->
         <HBox styleClass="topbar" alignment="CENTER_LEFT" spacing="16">
             <padding>
                 <Insets top="14" right="18" bottom="14" left="18"/>
             </padding>
 
-            <!-- Left: app icon + title -->
             <HBox spacing="10" alignment="CENTER_LEFT">
                 <FontIcon iconLiteral="fa-map-marker" iconSize="20" styleClass="app-icon"/>
                 <Label text="Simulácia Trasy" styleClass="app-title"/>
@@ -26,7 +24,6 @@
 
             <Separator orientation="VERTICAL" styleClass="toolbar-separator"/>
 
-            <!-- Controls -->
             <HBox spacing="12" alignment="CENTER_LEFT">
 
                 <Button fx:id="startButton" text="Spustiť" styleClass="btn btn-primary btn-toolbar" onAction="#onStartSimulation">
@@ -34,12 +31,12 @@
                         <FontIcon iconLiteral="fa-play" iconSize="12"/>
                     </graphic>
                 </Button>
-                <Button fx:id="stopButton" text="Zastaviť" styleClass="btn btn-secondary btn-toolbar" onAction="#onStopSimulation">
+                <Button fx:id="stopButton" text="Zastaviť" styleClass="btn btn-secondary btn-toolbar" onAction="#onStopSimulation" disable="true">
                     <graphic>
                         <FontIcon iconLiteral="fa-stop" iconSize="12"/>
                     </graphic>
                 </Button>
-                <Button fx:id="resumeButton" text="Pokračovať" styleClass="btn btn-secondary btn-toolbar" onAction="#onResumeSimulation">
+                <Button fx:id="resumeButton" text="Pokračovať" styleClass="btn btn-secondary btn-toolbar" onAction="#onResumeSimulation" disable="true">
                     <graphic>
                         <FontIcon iconLiteral="fa-forward" iconSize="12"/>
                     </graphic>
@@ -49,7 +46,6 @@
 
             <Region HBox.hgrow="ALWAYS"/>
 
-            <!-- Navigation to Task 2 -->
             <Separator orientation="VERTICAL" styleClass="toolbar-separator"/>
             <Button fx:id="task2Button" text="Úloha 2" styleClass="btn btn-nav btn-toolbar" onAction="#onGoToSecondTask">
                 <graphic>
@@ -63,21 +59,17 @@
             </Button>
         </HBox>
 
-        <!-- BODY -->
         <VBox styleClass="body-content">
-            <!-- MAIN CONTENT -->
             <VBox fx:id="contentPanel" styleClass="content" spacing="18" visible="false" managed="false">
                 <padding>
                     <Insets top="24" right="24" bottom="20" left="24"/>
                 </padding>
 
-                <!-- Header row -->
-                <HBox alignment="TOP_LEFT" spacing="18">
+                <HBox spacing="18">
                     <VBox spacing="6" HBox.hgrow="ALWAYS">
                         <Label text="Výsledky simulácie" styleClass="page-title"/>
                     </VBox>
 
-                    <!-- KPI cards -->
                     <HBox spacing="12" alignment="TOP_RIGHT">
                         <VBox styleClass="kpi-card" spacing="4">
                             <HBox spacing="6" alignment="CENTER_LEFT">
@@ -96,13 +88,11 @@
                     </HBox>
                 </HBox>
 
-                <!-- Results card with Charts -->
                 <VBox styleClass="card" spacing="14" VBox.vgrow="ALWAYS">
                     <padding>
                         <Insets top="18" right="18" bottom="14" left="18"/>
                     </padding>
 
-                    <!-- Charts grid — all 6 wrappers live here permanently; pagination toggles visibility -->
                     <GridPane fx:id="chartsGrid" hgap="16" vgap="16" VBox.vgrow="ALWAYS" styleClass="charts-grid">
                         <padding>
                             <Insets top="10" right="0" bottom="10" left="0"/>
@@ -113,7 +103,6 @@
                         </columnConstraints>
                     </GridPane>
 
-                    <!-- Pagination -->
                     <HBox alignment="CENTER">
                         <Pagination fx:id="pagination" styleClass="pagination"/>
                     </HBox>
