@@ -13,7 +13,7 @@ public final class SimulationConfig {
         return INSTANCE;
     }
 
-    private final LongProperty seedGeneratorSeed = new SimpleLongProperty(-53);
+    private final LongProperty seedGeneratorSeed = new SimpleLongProperty(10);
 
     private final IntegerProperty defaultReplications = new SimpleIntegerProperty(10_000_000);
     private final DoubleProperty skipPercentage = new SimpleDoubleProperty(10);
